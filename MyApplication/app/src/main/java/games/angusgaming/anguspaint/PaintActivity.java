@@ -47,19 +47,28 @@ import android.widget.Toast;
 
 public class PaintActivity extends AppCompatActivity {
 
-    private boolean isPortrait = true;
+    private boolean isPortrait;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Screen Orientation will be decided upon creation of a new activity
+        //The default orientation on opening the app the first time will be portrait
+        Intent intent = getIntent();
+        isPortrait = intent.getBooleanExtra("isPortrait", true);
+
+        if(isPortrait)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        else
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
         setContentView(R.layout.activity_paint);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        if(isPortrait) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+
     }
 
     @Override
@@ -87,9 +96,15 @@ public class PaintActivity extends AppCompatActivity {
 
         //on new button click
         if (id == R.id.item_new) {
+            //Intent object is used to create and start a new Activity
             Intent paintIntent = new Intent(this, PaintActivity.class);
+
+            paintIntent.putExtra("isPortrait", false);
+
             startActivity(paintIntent);
+
             this.finish();
+
             return true;
         }
 
