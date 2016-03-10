@@ -33,6 +33,8 @@ package games.angusgaming.anguspaint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class PaintActivity extends AppCompatActivity {
 
@@ -45,4 +47,46 @@ public class PaintActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.app_bar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //on load button click
+        if (id == R.id.item_load) {
+            return true;
+        }
+        //on save button click
+        if (id == R.id.item_save) {
+            return true;
+        }
+
+        //on new button click
+        if (id == R.id.item_new) {
+            return true;
+        }
+
+        //on About button click
+        if (id == R.id.item_about) {
+            return true;
+        }
+
+        //on Faqs click
+        if (id == R.id.item_faqs) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
