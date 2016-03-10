@@ -47,13 +47,39 @@ public class PaintView extends View {
     private Bitmap canvasBitmap;
 
     // set the initial color as black
-    private int paintColor = 0xFF660000;
+    private int paintColor = 0xFFFFFF;
+
+    //declare brush size float
+    private float brushSize;
+
     public PaintView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        brushSize = 20 ;
+
         setUpCanvas();
     }
 
     private void setUpCanvas() {
+
+        //set up Paint object settings
+        //determining which methods to set is through combing of Paint class API
+        //http://developer.android.com/reference/android/graphics/Paint.html
+
+        //intialize Paint object
+        paintingPaint = new Paint();
+
+        paintingPaint.setColor(paintColor);
+        paintingPaint.setStrokeWidth(brushSize);
+
+        //Set the paint's style, used for controlling how primitives' geometries are interpreted
+        paintingPaint.setStyle(Paint.Style.STROKE);
+
+        //set the paint's Join, used whenever the paint's style is Stroke or StrokeAndFill.
+        paintingPaint.setStrokeJoin(Paint.Join.ROUND);
+
+        // set the paint's line cap style, used whenever the paint's style is Stroke or StrokeAndFill.
+        paintingPaint.setStrokeCap(Paint.Cap.ROUND);
 
     }
 }
