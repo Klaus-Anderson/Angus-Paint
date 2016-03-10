@@ -64,9 +64,9 @@ public class PaintView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         //Draw the specified bitmap, with its top/left corner at (x,y),
-        // using the specified paint, transformed by the current matrix.
+        //using the specified paint, transformed by the current matrix.
         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
-        
+
         //Draw the specified path using the specified paint.
         canvas.drawPath(paintPath, paintingPaint);
     }
@@ -93,5 +93,7 @@ public class PaintView extends View {
         // set the paint's line cap style, used whenever the paint's style is Stroke or StrokeAndFill.
         paintingPaint.setStrokeCap(Paint.Cap.ROUND);
 
+        //intialize Path object
+        paintPath = new Path();
     }
 }
