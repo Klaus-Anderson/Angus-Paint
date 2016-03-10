@@ -25,7 +25,7 @@ public class PaintView extends View {
     // a Canvas to host the draw calls (writing into the bitmap),
     // a drawing primitive (e.g. Rect, Path, text, Bitmap),
     // and a paint (to describe the colors and styles for the drawing).
-    private Canvas paintCanvas;
+    private Canvas drawCanvas;
 
 
     // The Path class encapsulates compound (multiple contour)
@@ -70,7 +70,7 @@ public class PaintView extends View {
         // Possible bitmap configurations. A bitmap configuration describes how pixels are stored.
         // This affects the quality (color depth) as well as the ability to display transparent/translucent colors.
         canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        paintCanvas = new Canvas(canvasBitmap);
+        drawCanvas = new Canvas(canvasBitmap);
     }
 
     //Implement this to do your drawing.
@@ -103,7 +103,7 @@ public class PaintView extends View {
                 break;
             // MotionEvent.ACTION_UP is lifting finger from the screen
             case MotionEvent.ACTION_UP:
-                paintCanvas.drawPath(paintPath, paintingPaint);
+                drawCanvas.drawPath(paintPath, paintingPaint);
                 paintPath.reset();
                 break;
             default:
