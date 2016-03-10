@@ -69,7 +69,6 @@ public class PaintView extends View {
 
         // Possible bitmap configurations. A bitmap configuration describes how pixels are stored.
         // This affects the quality (color depth) as well as the ability to display transparent/translucent colors.
-
         canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         paintCanvas = new Canvas(canvasBitmap);
     }
