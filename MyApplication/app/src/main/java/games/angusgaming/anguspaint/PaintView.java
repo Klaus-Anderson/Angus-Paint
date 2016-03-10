@@ -56,9 +56,7 @@ public class PaintView extends View {
 
     public PaintView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
         brushSize = 20 ;
-
         setUpCanvas();
     }
 
