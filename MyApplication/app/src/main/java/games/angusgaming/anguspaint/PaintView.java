@@ -49,7 +49,7 @@ public class PaintView extends View {
     private Bitmap canvasBitmap;
 
     // set the initial color as black
-    private int paintColor = 0xFFFFFF;
+    private int paintColor = 0xFF000000;
 
     //declare brush size float
     private float brushSize;
@@ -60,6 +60,18 @@ public class PaintView extends View {
         brushSize = 20 ;
 
         setUpCanvas();
+    }
+
+    //On creation of the view, will be called when the custom view is assigned a size
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        // Possible bitmap configurations. A bitmap configuration describes how pixels are stored.
+        // This affects the quality (color depth) as well as the ability to display transparent/translucent colors.
+
+        canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        paintCanvas = new Canvas(canvasBitmap);
     }
 
     //Implement this to do your drawing.
