@@ -1,7 +1,7 @@
 package games.angusgaming.anguspaint;
 
 /**
- * This Application is Basic Paint Application, for
+ * This Application is Basic Paint Application
  *
  * We would like you to design a simple paint application.
  * This app should have a main activity with a canvas that allows the user to draw and save basic pictures/paintings.
@@ -27,6 +27,12 @@ package games.angusgaming.anguspaint;
  * • Various brush shapes and sizes
  * • Full color palette that allows any choice using RGB or HSV
  * • Capture a new image from camera to paint on
+ *
+ * I received assistance from this tutorial by Sue Smith to make a drawing app:
+ * http://code.tutsplus.com/series/create-a-drawing-app-on-android--cms-704
+ * I have thoroughly commented out the project to show my understanding of this app
+ * goes beyond the tutorial, and the enhancements I will show my accelerated
+ * understanding of Android App development.
  *
  */
 

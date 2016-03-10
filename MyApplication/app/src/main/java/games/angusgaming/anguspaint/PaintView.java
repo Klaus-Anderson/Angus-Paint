@@ -38,8 +38,9 @@ public class PaintView extends View {
 
     // The Paint class holds the style and color information about how to draw geometries, text and bitmaps.
     //
-    // This Paint will hold the brush size and desired color information
-    private Paint paintingPaint;
+    // The paintingPaint Paint object will hold the brush size and desired color information
+    // The canvasPaint object will hold the Paint information for entire canvas
+    private Paint paintingPaint, canvasPaint;
 
     // A Bitmap handles the which pixels handle which color.
     //
@@ -60,14 +61,25 @@ public class PaintView extends View {
         setUpCanvas();
     }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+        //Draw the specified bitmap, with its top/left corner at (x,y),
+        // using the specified paint, transformed by the current matrix.
+        canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
+        
+        //Draw the specified path using the specified paint.
+        canvas.drawPath(paintPath, paintingPaint);
+    }
+
     private void setUpCanvas() {
 
         //set up Paint object settings
         //determining which methods to set is through combing of Paint class API
         //http://developer.android.com/reference/android/graphics/Paint.html
 
-        //intialize Paint object
+        //intialize Paint objects
         paintingPaint = new Paint();
+        canvasPaint = new Paint();
 
         paintingPaint.setColor(paintColor);
         paintingPaint.setStrokeWidth(brushSize);
