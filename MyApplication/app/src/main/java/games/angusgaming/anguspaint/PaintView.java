@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -61,6 +62,7 @@ public class PaintView extends View {
         setUpCanvas();
     }
 
+    //Implement this to do your drawing.
     @Override
     protected void onDraw(Canvas canvas) {
         //Draw the specified bitmap, with its top/left corner at (x,y),
@@ -69,6 +71,36 @@ public class PaintView extends View {
 
         //Draw the specified path using the specified paint.
         canvas.drawPath(paintPath, paintingPaint);
+    }
+
+    //Implement this method to handle touch screen motion events.
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // TouchX is x coordinate location of Touch event, relative to the PaintView
+        float touchX = event.getX();
+        // Touchy is y coordinate location of Touch event, relative to the PaintView
+        float touchY = event.getY();
+
+        switch (event.getAction()) {
+            // MotionEvent.ACTION_DOWN is pressing down on screen
+            case MotionEvent.ACTION_DOWN:
+                paintPath.moveTo(touchX, touchY);
+                break;
+            // MotionEvent.ACTION_MOVE is pressing down on screen and moving finger
+            case MotionEvent.ACTION_MOVE:
+                paintPath.lineTo(touchX, touchY);
+                break;
+            // MotionEvent.ACTION_UP is lifting finger from the screen
+            case MotionEvent.ACTION_UP:
+                paintCanvas.drawPath(paintPath, paintingPaint);
+                paintPath.reset();
+                break;
+            default:
+                return false;
+        }
+        //Calling invalidate will cause the onDraw method to execute.
+        invalidate();
+        return true;
     }
 
     private void setUpCanvas() {
