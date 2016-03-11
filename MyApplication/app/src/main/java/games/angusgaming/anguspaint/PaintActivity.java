@@ -36,6 +36,8 @@ package games.angusgaming.anguspaint;
  *
  */
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -97,13 +99,16 @@ public class PaintActivity extends AppCompatActivity {
         //on new button click
         if (id == R.id.item_new) {
             //Intent object is used to create and start a new Activity
-            Intent paintIntent = new Intent(this, PaintActivity.class);
+            //Intent paintIntent = new Intent(this, PaintActivity.class);
 
-            paintIntent.putExtra("isPortrait", false);
+            //paintIntent.putExtra("isPortrait", false);
 
-            startActivity(paintIntent);
+            //startActivity(paintIntent);
 
-            this.finish();
+            //this.finish();
+
+            ContinueFragment contFrag = new ContinueFragment();
+            contFrag.show(getFragmentManager(),"Diag");
 
             return true;
         }

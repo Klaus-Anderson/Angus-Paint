@@ -3,4 +3,8 @@
     <string name="action_settings">Settings</string>
     <string name="about">About</string>
     <string name="faqs">FAQs/Directions</string>
+    <string name="wish_to_save">Do you wish to\nsave before continuing?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="cancel">Cancel</string>
 </resources>
