@@ -102,8 +102,16 @@ public class PaintActivity extends AppCompatActivity {
         //on new button click
         if (id == R.id.item_new) {
 
-            ContinueFragment contFrag = new ContinueFragment();
-            contFrag.show(getFragmentManager(),"Diag");
+            // this if/else statement will ask the user if they want to save
+            // if they have drawn something and they have not saved since
+            // their last paint stroke
+            if(hasDrawn) {
+                ContinueFragment contFrag = new ContinueFragment();
+                contFrag.show(getFragmentManager(), "Cont");
+            } else {
+                OrientationFragment orientFrag = new OrientationFragment();
+                orientFrag.show(getFragmentManager(), "Orient");
+            }
 
             return true;
         }
@@ -143,7 +151,7 @@ public class PaintActivity extends AppCompatActivity {
 
     public void setHasDrawn(boolean setter){
         hasDrawn = setter;
-        Toast.makeText(this, "We've done it!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "We've done it!", Toast.LENGTH_SHORT).show();
     }
 
     public boolean getHasDrawn(){
