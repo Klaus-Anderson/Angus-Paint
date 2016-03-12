@@ -120,6 +120,7 @@ public class PaintActivity extends AppCompatActivity {
     }
 
     public void savePainting() {
+        //Toast.makeText(this, "We've done it!", Toast.LENGTH_LONG).show();
     }
 
     public void newPainting() {

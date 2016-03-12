@@ -1,6 +1,7 @@
 package games.angusgaming.anguspaint;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -52,11 +53,12 @@ public class ContinueFragment extends DialogFragment {
         yesButton.setTextSize(18);
         buttonLayout.addView(yesButton);
 
+        //pressing Yes will prompt the user to save the picture
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                ((PaintActivity) mContext).savePainting();
+                ((PaintActivity) ContinueFragment.this.getActivity()).savePainting();
             }
         });
 
@@ -65,10 +67,30 @@ public class ContinueFragment extends DialogFragment {
         noButton.setTextSize(18);
         buttonLayout.addView(noButton);
 
+        //pressing No will create a new paint activity without saving
+        noButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // hide the ContinueFragment,
+                // create a an OrientationFragment,
+                // then remove the ContinueFragment
+                
+            }
+        });
+
         Button cancelButton = new Button(getActivity());
         cancelButton.setText(R.string.cancel);
         cancelButton.setTextSize(18);
         buttonLayout.addView(cancelButton);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((PaintActivity)ContinueFragment.this.getActivity())
+                    .getFragmentManager().beginTransaction()
+                    .remove(ContinueFragment.this).commit();
+            }
+        });
 
         linLayout.addView(buttonLayout);
 
