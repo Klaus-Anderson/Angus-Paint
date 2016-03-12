@@ -49,7 +49,7 @@ import android.widget.Toast;
 
 public class PaintActivity extends AppCompatActivity {
 
-    private boolean isPortrait;
+    private boolean isPortrait, hasDrawn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +59,8 @@ public class PaintActivity extends AppCompatActivity {
         //The default orientation on opening the app the first time will be portrait
         Intent intent = getIntent();
         isPortrait = intent.getBooleanExtra("isPortrait", true);
+
+        hasDrawn = false;
 
         if(isPortrait)
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -137,6 +139,14 @@ public class PaintActivity extends AppCompatActivity {
 
         startActivity(paintIntent);
         this.finish();
+    }
 
+    public void setHasDrawn(boolean setter){
+        hasDrawn = setter;
+        Toast.makeText(this, "We've done it!", Toast.LENGTH_SHORT).show();
+    }
+
+    public boolean getHasDrawn(){
+        return hasDrawn;
     }
 }

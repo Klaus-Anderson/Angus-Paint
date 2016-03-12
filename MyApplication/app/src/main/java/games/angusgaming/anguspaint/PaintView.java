@@ -74,6 +74,7 @@ public class PaintView extends View {
     //Implement this to do your drawing.
     @Override
     protected void onDraw(Canvas canvas) {
+
         //Draw the specified bitmap, with its top/left corner at (x,y),
         //using the specified paint, transformed by the current matrix.
         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
@@ -85,6 +86,11 @@ public class PaintView extends View {
     //Implement this method to handle touch screen motion events.
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        //this will tell the activity that something has been drawn,
+        if(!((PaintActivity)getContext()).getHasDrawn())
+            ((PaintActivity)getContext()).setHasDrawn(true);
+
         // TouchX is x coordinate location of Touch event, relative to the PaintView
         float touchX = event.getX();
         // Touchy is y coordinate location of Touch event, relative to the PaintView
