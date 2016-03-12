@@ -93,6 +93,7 @@ public class PaintActivity extends AppCompatActivity {
         }
         //on save button click
         if (id == R.id.item_save) {
+            this.savePainting();
             return true;
         }
 
@@ -126,4 +127,6 @@ public class PaintActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void savePainting() {
+    }
 }

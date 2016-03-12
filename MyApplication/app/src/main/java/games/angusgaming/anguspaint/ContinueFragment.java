@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 public class ContinueFragment extends DialogFragment {
     Context mContext;
     public ContinueFragment() {
+
         mContext = getActivity();
     }
 
@@ -49,6 +51,14 @@ public class ContinueFragment extends DialogFragment {
         yesButton.setText(R.string.yes);
         yesButton.setTextSize(18);
         buttonLayout.addView(yesButton);
+
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ((PaintActivity) mContext).savePainting();
+            }
+        });
 
         Button noButton = new Button(getActivity());
         noButton.setText(R.string.no);
