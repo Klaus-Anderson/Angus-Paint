@@ -16,7 +16,7 @@ package games.angusgaming.anguspaint;
  * • ActionBar Menu which contains at least:
  * – “About” - Should bring up a dialog with some information about you/app
  * – “FAQ/Directions” - Should open a new activity with directions of how to use the app
- * • One spherical brush minimum with 3 di↵erent sizes
+ * • One spherical brush minimum with 3 different sizes
  * • Color choices (Red, Orange, Yellow, Green, Blue, Purple, White, Black)
  * • Save an image to the phone
  * • Load an image from phone storage and paint on it with the app
@@ -105,7 +105,7 @@ public class PaintActivity extends AppCompatActivity {
         }
         //on save button click
         if (id == R.id.item_save) {
-            this.savePainting();
+            savePainting();
             return true;
         }
 
@@ -137,6 +137,16 @@ public class PaintActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStop(){
+        // if the user closes the app with saving
+        // their painting will autosave if it is not blank
+        if(hasDrawn)
+            savePainting();
+
+        super.onStop();
     }
 
     public void savePainting() {
@@ -195,4 +205,5 @@ public class PaintActivity extends AppCompatActivity {
     public boolean getHasDrawn(){
         return hasDrawn;
     }
+
 }
