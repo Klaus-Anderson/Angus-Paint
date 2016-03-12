@@ -52,9 +52,25 @@ public class OrientationFragment extends DialogFragment {
         portraitButton.setImageResource(R.drawable.ic_stay_current_portrait_black_24dp);
         buttonLayout.addView(portraitButton);
 
+        portraitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ((PaintActivity)OrientationFragment.this.getActivity()).newPainting(true);
+            }
+        });
+
         ImageButton landscapeButton = new ImageButton(getActivity());
         landscapeButton.setImageResource(R.drawable.ic_stay_current_landscape_black_24dp);
         buttonLayout.addView(landscapeButton);
+
+        landscapeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ((PaintActivity) OrientationFragment.this.getActivity()).newPainting(false);
+            }
+        });
 
         linLayout.addView(buttonLayout);
 

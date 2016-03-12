@@ -1,6 +1,6 @@
 Angus Paint, an Android App by Harry Cliff
 
-This a paint app, made for the interview process to become and Android developer at JP Morgan Chase in Colombus Ohio.
+This a paint app, made for the interview process to become and Android developer.
 This app seeks to meet the requirements as specified by the following document:
 
  * This Application is Basic Paint Application

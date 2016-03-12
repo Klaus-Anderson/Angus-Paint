@@ -123,11 +123,17 @@ public class PaintActivity extends AppCompatActivity {
         //Toast.makeText(this, "We've done it!", Toast.LENGTH_LONG).show();
     }
 
-    public void newPainting() {
+    public void newPainting(boolean isPortraitCheck) {
         //Intent object is used to create and start a new Activity
 
         Intent paintIntent = new Intent(this, PaintActivity.class);
-        paintIntent.putExtra("isPortrait", false);
+
+        // checks to see if user selected their painting
+        // to be portrait or landscape
+        if(isPortraitCheck)
+            paintIntent.putExtra("isPortrait", true);
+        else
+            paintIntent.putExtra("isPortrait", false);
 
         startActivity(paintIntent);
         this.finish();
