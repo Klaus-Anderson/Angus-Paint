@@ -74,7 +74,16 @@ public class ContinueFragment extends DialogFragment {
                 // hide the ContinueFragment,
                 // create a an OrientationFragment,
                 // then remove the ContinueFragment
-                
+                ((PaintActivity)ContinueFragment.this.getActivity())
+                        .getFragmentManager().beginTransaction()
+                        .hide(ContinueFragment.this).commit();
+
+                OrientationFragment orientFrag = new OrientationFragment();
+                orientFrag.show(getFragmentManager(), "Diag");
+
+                ((PaintActivity)ContinueFragment.this.getActivity())
+                        .getFragmentManager().beginTransaction()
+                        .remove(ContinueFragment.this).commit();
             }
         });
 
