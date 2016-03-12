@@ -3,6 +3,7 @@ package games.angusgaming.anguspaint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
@@ -68,7 +69,11 @@ public class PaintView extends View {
         // Possible bitmap configurations. A bitmap configuration describes how pixels are stored.
         // This affects the quality (color depth) as well as the ability to display transparent/translucent colors.
         canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+
         drawCanvas = new Canvas(canvasBitmap);
+
+        // by default have the canvas be entirely white
+        drawCanvas.drawColor(Color.WHITE);
     }
 
     //Implement this to do your drawing.
@@ -142,5 +147,9 @@ public class PaintView extends View {
 
         //intialize Path object
         paintPath = new Path();
+    }
+
+    public Bitmap getCanvasBitmap(){
+        return canvasBitmap;
     }
 }

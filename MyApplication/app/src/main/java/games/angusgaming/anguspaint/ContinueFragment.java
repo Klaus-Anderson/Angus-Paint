@@ -57,8 +57,25 @@ public class ContinueFragment extends DialogFragment {
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // attempt to save the paint
                 ((PaintActivity) ContinueFragment.this.getActivity()).savePainting();
+
+                // only prompt the user to make a new painting
+                // if the save is successful
+                if(!((PaintActivity) ContinueFragment.this.getActivity()).getHasDrawn()){
+                    ((PaintActivity)ContinueFragment.this.getActivity())
+                            .getFragmentManager().beginTransaction()
+                            .hide(ContinueFragment.this).commit();
+
+                    OrientationFragment orientFrag = new OrientationFragment();
+                    orientFrag.show(ContinueFragment.this.getActivity().getFragmentManager(), "Diag");
+                }
+
+                ((PaintActivity)ContinueFragment.this.getActivity())
+                        .getFragmentManager().beginTransaction()
+                        .remove(ContinueFragment.this).commit();
+
+
             }
         });
 

@@ -40,12 +40,20 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.UUID;
 
 public class PaintActivity extends AppCompatActivity {
 
@@ -67,11 +75,13 @@ public class PaintActivity extends AppCompatActivity {
         else
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
+        // this code will set the apps content view as the
+        // activity_paint layout xml
         setContentView(R.layout.activity_paint);
 
+        // this code will set this Toolbar as the Action/App
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-
 
     }
 
@@ -131,6 +141,34 @@ public class PaintActivity extends AppCompatActivity {
 
     public void savePainting() {
         //Toast.makeText(this, "We've done it!", Toast.LENGTH_LONG).show();
+        String imageName = UUID.randomUUID().toString()+".png";
+
+        PaintView paintView = (PaintView) this.findViewById(R.id.drawing);
+
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/saved_images");
+        myDir.mkdirs();
+
+        File file = new File (myDir, imageName);
+        if (file.exists ()) file.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            paintView.getCanvasBitmap().compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+
+            Toast.makeText(this, "Painting saved as " + imageName, Toast.LENGTH_SHORT)
+                    .show();
+            hasDrawn = false;
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Painting failed to save!", Toast.LENGTH_SHORT)
+                    .show();
+            e.printStackTrace();
+        }
+
+        paintView.destroyDrawingCache();
+
     }
 
     public void newPainting(boolean isPortraitCheck) {
