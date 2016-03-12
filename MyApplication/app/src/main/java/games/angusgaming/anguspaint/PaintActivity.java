@@ -99,14 +99,6 @@ public class PaintActivity extends AppCompatActivity {
 
         //on new button click
         if (id == R.id.item_new) {
-            //Intent object is used to create and start a new Activity
-            //Intent paintIntent = new Intent(this, PaintActivity.class);
-
-            //paintIntent.putExtra("isPortrait", false);
-
-            //startActivity(paintIntent);
-
-            //this.finish();
 
             ContinueFragment contFrag = new ContinueFragment();
             contFrag.show(getFragmentManager(),"Diag");
@@ -128,5 +120,16 @@ public class PaintActivity extends AppCompatActivity {
     }
 
     public void savePainting() {
+    }
+
+    public void newPainting() {
+        //Intent object is used to create and start a new Activity
+
+        Intent paintIntent = new Intent(this, PaintActivity.class);
+        paintIntent.putExtra("isPortrait", false);
+
+        startActivity(paintIntent);
+        this.finish();
+
     }
 }
