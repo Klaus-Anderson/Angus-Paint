@@ -1,15 +1,10 @@
 package games.angusgaming.anguspaint;
 
 import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
