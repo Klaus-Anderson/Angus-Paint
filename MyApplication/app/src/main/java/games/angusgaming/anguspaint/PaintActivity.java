@@ -2,14 +2,14 @@ package games.angusgaming.anguspaint;
 
 /**
  * This Application is Basic Paint Application
- * <p/>
+ *
  * We would like you to design a simple paint application.
  * This app should have a main activity with a canvas that allows the user to draw and save basic pictures/paintings.
  * The application should be able to run in portrait or landscape mode,
  * and should contain an ActionBar with a few buttons and a menu,
  * and should save a user’s painting in the event they accidentally close the app.
  * More speciﬁc core features are listed below, the rest is entirely up to you!
- * <p/>
+ *
  * Core Feature Requirements:
  * • Main activity with a large canvas for drawing
  * • ActionBar with at least three buttons: Load, Save, New
@@ -21,13 +21,13 @@ package games.angusgaming.anguspaint;
  * • Save an image to the phone
  * • Load an image from phone storage and paint on it with the app
  * • Portrait and landscape functionality, and saved-state for switching between apps and back
- * <p/>
+ *
  * Suggested Bonus/Challenge Features:
  * • Share an image through text/email or other choices
  * • Various brush shapes and sizes
  * • Full color palette that allows any choice using RGB or HSV
  * • Capture a new image from camera to paint on
- * <p/>
+ *
  * I received assistance from this tutorial by Sue Smith to make a drawing app:
  * http://code.tutsplus.com/series/create-a-drawing-app-on-android--cms-704
  * I have thoroughly commented out the project to show my understanding of this app
