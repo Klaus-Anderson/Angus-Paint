@@ -36,8 +36,6 @@ package games.angusgaming.anguspaint;
  */
 
 import android.annotation.TargetApi;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -46,10 +44,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.RotateDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -57,12 +53,11 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -72,7 +67,8 @@ import java.util.UUID;
 
 public class PaintActivity extends AppCompatActivity {
 
-    private boolean hasDrawn, isLoad, wasLoad, willSave;
+    private boolean hasDrawn, isLoad, wasLoad, willSave, isPortrait;
+    private PaintView paintView;
 
     private static int RESULT_LOAD_IMG = 1;
     String imgDecodableString;
@@ -84,7 +80,7 @@ public class PaintActivity extends AppCompatActivity {
         //Screen Orientation will be decided upon creation of a new activity
         //The default orientation on opening the app the first time will be portrait
         Intent intent = getIntent();
-        //isPortrait = intent.getBooleanExtra("isPortrait", true);
+        isPortrait = intent.getBooleanExtra("isPortrait", true);
 
         //check to see if this painting is supposed to load a picture
         wasLoad = intent.getBooleanExtra("isLoad", false);
@@ -103,6 +99,8 @@ public class PaintActivity extends AppCompatActivity {
         // this code will set the apps content view as the
         // activity_paint layout xml
         setContentView(R.layout.activity_paint);
+
+        paintView = (PaintView) findViewById(R.id.drawing);
 
         // this code will set this Toolbar as the Action/App
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -150,10 +148,40 @@ public class PaintActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            Log.d("CDA", "onKeyDown Called");
+            onBackPressed();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.app_bar_menu, menu);
         return true;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(isPortrait)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        else
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     @Override
@@ -211,20 +239,7 @@ public class PaintActivity extends AppCompatActivity {
         if (id == R.id.item_faqs) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        // Save UI state changes to the savedInstanceState.
-        // This bundle will be passed to onCreate if the process is
-        // killed and restarted.
-
-        Bitmap viewBitmap = getBitmapFromView(findViewById(R.id.drawing));
-        String viewString = bitMapToString(viewBitmap);
-        savedInstanceState.putString("viewString", viewString);
     }
 
     @Override
@@ -279,50 +294,14 @@ public class PaintActivity extends AppCompatActivity {
         else
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
+        paintIntent.putExtra("isPortrait", isPortraitCheck);
+
         // checks to see if new painting
         // is a load or a new
         paintIntent.putExtra("isLoad", isLoad);
 
         startActivity(paintIntent);
         this.finish();
-    }
-
-    private Bitmap getBitmapFromView(View view) {
-        //Define a bitmap with the same size as the view
-        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
-        //Bind a canvas to it
-        Canvas canvas = new Canvas(returnedBitmap);
-        //Get the view's background
-        Drawable bgDrawable =view.getBackground();
-        if (bgDrawable!=null)
-            //has background drawable, then draw it on the canvas
-            bgDrawable.draw(canvas);
-        else
-            //does not have background drawable, then draw white background on the canvas
-            canvas.drawColor(Color.WHITE);
-        // draw the view on the canvas
-        view.draw(canvas);
-        //return the bitmap
-        return returnedBitmap;
-    }
-
-    private String bitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
-
-    public Bitmap stringToBitMap(String encodedString){
-        try {
-            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch(Exception e) {
-            e.getMessage();
-            return null;
-        }
     }
 
     public void setHasDrawn(boolean setter) {
