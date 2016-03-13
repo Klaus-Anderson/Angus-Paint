@@ -55,8 +55,8 @@ public class OrientationFragment extends DialogFragment {
         portraitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                ((PaintActivity)OrientationFragment.this.getActivity()).newPainting(true);
+                ((PaintActivity) OrientationFragment.this.getActivity()).setWillSave(false);
+                ((PaintActivity) OrientationFragment.this.getActivity()).newPainting(true);
             }
         });
 
@@ -67,7 +67,7 @@ public class OrientationFragment extends DialogFragment {
         landscapeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ((PaintActivity) OrientationFragment.this.getActivity()).setWillSave(false);
                 ((PaintActivity) OrientationFragment.this.getActivity()).newPainting(false);
             }
         });

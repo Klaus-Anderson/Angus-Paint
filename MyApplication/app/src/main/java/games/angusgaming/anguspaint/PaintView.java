@@ -73,7 +73,8 @@ public class PaintView extends View {
         drawCanvas = new Canvas(canvasBitmap);
 
         // by default have the canvas be entirely white
-        drawCanvas.drawColor(Color.WHITE);
+        if(!((PaintActivity)getContext()).getWasLoad())
+            drawCanvas.drawColor(Color.WHITE);
     }
 
     //Implement this to do your drawing.

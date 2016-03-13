@@ -40,7 +40,12 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -49,6 +54,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -57,7 +63,10 @@ import java.util.UUID;
 
 public class PaintActivity extends AppCompatActivity {
 
-    private boolean isPortrait, hasDrawn;
+    private boolean isPortrait, hasDrawn, isLoad, wasLoad, willSave;
+
+    private static int RESULT_LOAD_IMG = 1;
+    String imgDecodableString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +77,24 @@ public class PaintActivity extends AppCompatActivity {
         Intent intent = getIntent();
         isPortrait = intent.getBooleanExtra("isPortrait", true);
 
+        wasLoad = intent.getBooleanExtra("isLoad", false);
+
         hasDrawn = false;
+        willSave = true;
 
         if(isPortrait)
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         else
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        if(wasLoad){
+            // Create intent to Open Image applications like Gallery, Google Photos
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            // Start the Intent
+            startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
+        }
+
 
         // this code will set the apps content view as the
         // activity_paint layout xml
@@ -83,6 +104,45 @@ public class PaintActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(wasLoad) {
+            try {
+                // When an Image is picked
+                if (requestCode == RESULT_LOAD_IMG && resultCode == RESULT_OK
+                        && null != data) {
+                    // Get the Image from data
+
+                    Uri selectedImage = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                    // Get the cursor
+                    Cursor cursor = getContentResolver().query(selectedImage,
+                            filePathColumn, null, null, null);
+                    // Move to first row
+                    cursor.moveToFirst();
+
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    imgDecodableString = cursor.getString(columnIndex);
+                    cursor.close();
+
+                    // Set the Image in ImageView after decoding the String
+                    Drawable drawable = new BitmapDrawable(getResources(),BitmapFactory
+                            .decodeFile(imgDecodableString));
+                    this.findViewById(R.id.drawing).setBackground(drawable);
+
+                } else {
+                    Toast.makeText(this, "You haven't picked Image",
+                            Toast.LENGTH_LONG).show();
+                }
+            } catch (Exception e) {
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG)
+                        .show();
+            }
+        }
     }
 
     @Override
@@ -101,6 +161,21 @@ public class PaintActivity extends AppCompatActivity {
 
         //on load button click
         if (id == R.id.item_load) {
+
+            // this if/else statement will ask the user if they want to save
+            // if they have drawn something and they have not saved since
+            // their last paint stroke
+            if(hasDrawn) {
+                ContinueFragment contFrag = new ContinueFragment();
+                contFrag.show(getFragmentManager(), "Cont");
+
+            } else {
+                OrientationFragment orientFrag = new OrientationFragment();
+                orientFrag.show(getFragmentManager(), "Orient");
+            }
+
+            isLoad = true;
+
             return true;
         }
         //on save button click
@@ -123,6 +198,8 @@ public class PaintActivity extends AppCompatActivity {
                 orientFrag.show(getFragmentManager(), "Orient");
             }
 
+            isLoad = false;
+
             return true;
         }
 
@@ -143,7 +220,7 @@ public class PaintActivity extends AppCompatActivity {
     public void onStop(){
         // if the user closes the app with saving
         // their painting will autosave if it is not blank
-        if(hasDrawn)
+        if(hasDrawn&&willSave)
             savePainting();
 
         super.onStop();
@@ -188,10 +265,11 @@ public class PaintActivity extends AppCompatActivity {
 
         // checks to see if user selected their painting
         // to be portrait or landscape
-        if(isPortraitCheck)
-            paintIntent.putExtra("isPortrait", true);
-        else
-            paintIntent.putExtra("isPortrait", false);
+        paintIntent.putExtra("isPortrait", isPortraitCheck);
+
+        // checks to see if new painting
+        // is a load or a new
+        paintIntent.putExtra("isLoad", isLoad);
 
         startActivity(paintIntent);
         this.finish();
@@ -204,6 +282,14 @@ public class PaintActivity extends AppCompatActivity {
 
     public boolean getHasDrawn(){
         return hasDrawn;
+    }
+
+    public void setWillSave(boolean setter){
+        willSave = setter;
+    }
+
+    public boolean getWasLoad(){
+        return wasLoad;
     }
 
 }
