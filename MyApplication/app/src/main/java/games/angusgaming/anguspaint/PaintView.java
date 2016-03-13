@@ -74,7 +74,11 @@ public class PaintView extends View {
 
         // by default have the canvas be entirely white
         if(!((PaintActivity)getContext()).getWasLoad())
-            drawCanvas.drawColor(Color.WHITE);
+            whiteBackground();
+    }
+
+    public void whiteBackground() {
+        drawCanvas.drawColor(Color.WHITE);
     }
 
     //Implement this to do your drawing.

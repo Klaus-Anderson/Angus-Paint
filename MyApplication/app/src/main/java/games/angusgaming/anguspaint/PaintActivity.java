@@ -68,7 +68,6 @@ import java.util.UUID;
 public class PaintActivity extends AppCompatActivity {
 
     private boolean hasDrawn, isLoad, wasLoad, willSave, isPortrait;
-    private PaintView paintView;
 
     private static int RESULT_LOAD_IMG = 1;
     String imgDecodableString;
@@ -99,8 +98,6 @@ public class PaintActivity extends AppCompatActivity {
         // this code will set the apps content view as the
         // activity_paint layout xml
         setContentView(R.layout.activity_paint);
-
-        paintView = (PaintView) findViewById(R.id.drawing);
 
         // this code will set this Toolbar as the Action/App
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -140,10 +137,14 @@ public class PaintActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "You haven't picked Image",
                         Toast.LENGTH_LONG).show();
+                //set paintView background as white if picture fails to load
+                ((PaintView)findViewById(R.id.drawing)).whiteBackground();
             }
         } catch (Exception e) {
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG)
                     .show();
+            //set paintView background as white if picture fails to load
+            ((PaintView)findViewById(R.id.drawing)).whiteBackground();
         }
     }
 
@@ -193,7 +194,6 @@ public class PaintActivity extends AppCompatActivity {
 
         //on load button click
         if (id == R.id.item_load) {
-
             // this if/else statement will ask the user if they want to save
             // if they have drawn something and they have not saved since
             // their last paint stroke
@@ -253,7 +253,6 @@ public class PaintActivity extends AppCompatActivity {
     }
 
     public void savePainting() {
-        //Toast.makeText(this, "We've done it!", Toast.LENGTH_LONG).show();
         String imageName = UUID.randomUUID().toString() + ".png";
 
         PaintView paintView = (PaintView) this.findViewById(R.id.drawing);
