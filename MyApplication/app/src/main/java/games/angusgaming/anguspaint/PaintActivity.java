@@ -2,14 +2,14 @@ package games.angusgaming.anguspaint;
 
 /**
  * This Application is Basic Paint Application
- *
+ * <p/>
  * We would like you to design a simple paint application.
  * This app should have a main activity with a canvas that allows the user to draw and save basic pictures/paintings.
  * The application should be able to run in portrait or landscape mode,
  * and should contain an ActionBar with a few buttons and a menu,
  * and should save a user’s painting in the event they accidentally close the app.
  * More speciﬁc core features are listed below, the rest is entirely up to you!
- *
+ * <p/>
  * Core Feature Requirements:
  * • Main activity with a large canvas for drawing
  * • ActionBar with at least three buttons: Load, Save, New
@@ -21,49 +21,58 @@ package games.angusgaming.anguspaint;
  * • Save an image to the phone
  * • Load an image from phone storage and paint on it with the app
  * • Portrait and landscape functionality, and saved-state for switching between apps and back
- *
+ * <p/>
  * Suggested Bonus/Challenge Features:
  * • Share an image through text/email or other choices
  * • Various brush shapes and sizes
  * • Full color palette that allows any choice using RGB or HSV
  * • Capture a new image from camera to paint on
- *
+ * <p/>
  * I received assistance from this tutorial by Sue Smith to make a drawing app:
  * http://code.tutsplus.com/series/create-a-drawing-app-on-android--cms-704
  * I have thoroughly commented out the project to show my understanding of this app
  * goes beyond the tutorial, and the enhancements I will show my accelerated
  * understanding of Android App development.
- *
  */
 
+import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RotateDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.UUID;
 
 public class PaintActivity extends AppCompatActivity {
 
-    private boolean isPortrait, hasDrawn, isLoad, wasLoad, willSave;
+    private boolean hasDrawn, isLoad, wasLoad, willSave;
 
     private static int RESULT_LOAD_IMG = 1;
     String imgDecodableString;
@@ -75,26 +84,21 @@ public class PaintActivity extends AppCompatActivity {
         //Screen Orientation will be decided upon creation of a new activity
         //The default orientation on opening the app the first time will be portrait
         Intent intent = getIntent();
-        isPortrait = intent.getBooleanExtra("isPortrait", true);
+        //isPortrait = intent.getBooleanExtra("isPortrait", true);
 
+        //check to see if this painting is supposed to load a picture
         wasLoad = intent.getBooleanExtra("isLoad", false);
 
         hasDrawn = false;
         willSave = true;
 
-        if(isPortrait)
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        else
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-        if(wasLoad){
+        if (wasLoad) {
             // Create intent to Open Image applications like Gallery, Google Photos
             Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             // Start the Intent
             startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
         }
-
 
         // this code will set the apps content view as the
         // activity_paint layout xml
@@ -103,45 +107,45 @@ public class PaintActivity extends AppCompatActivity {
         // this code will set this Toolbar as the Action/App
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(wasLoad) {
-            try {
-                // When an Image is picked
-                if (requestCode == RESULT_LOAD_IMG && resultCode == RESULT_OK
-                        && null != data) {
-                    // Get the Image from data
+        try {
+            // When an Image is picked
+            if (requestCode == RESULT_LOAD_IMG && resultCode == RESULT_OK
+                    && null != data) {
 
-                    Uri selectedImage = data.getData();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                // Get the Image from data
 
-                    // Get the cursor
-                    Cursor cursor = getContentResolver().query(selectedImage,
-                            filePathColumn, null, null, null);
-                    // Move to first row
-                    cursor.moveToFirst();
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    imgDecodableString = cursor.getString(columnIndex);
-                    cursor.close();
+                // Get the cursor
+                Cursor cursor = getContentResolver().query(selectedImage,
+                        filePathColumn, null, null, null);
+                // Move to first row
+                cursor.moveToFirst();
 
-                    // Set the Image in ImageView after decoding the String
-                    Drawable drawable = new BitmapDrawable(getResources(),BitmapFactory
-                            .decodeFile(imgDecodableString));
-                    this.findViewById(R.id.drawing).setBackground(drawable);
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                imgDecodableString = cursor.getString(columnIndex);
+                cursor.close();
 
-                } else {
-                    Toast.makeText(this, "You haven't picked Image",
-                            Toast.LENGTH_LONG).show();
-                }
-            } catch (Exception e) {
-                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG)
-                        .show();
+                // Set the Image in ImageView after decoding the String
+                Drawable drawable = new BitmapDrawable(getResources(), BitmapFactory
+                        .decodeFile(imgDecodableString));
+
+                this.findViewById(R.id.drawing).setBackground(drawable);
+
+            } else {
+                Toast.makeText(this, "You haven't picked Image",
+                        Toast.LENGTH_LONG).show();
             }
+        } catch (Exception e) {
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG)
+                    .show();
         }
     }
 
@@ -165,7 +169,7 @@ public class PaintActivity extends AppCompatActivity {
             // this if/else statement will ask the user if they want to save
             // if they have drawn something and they have not saved since
             // their last paint stroke
-            if(hasDrawn) {
+            if (hasDrawn) {
                 ContinueFragment contFrag = new ContinueFragment();
                 contFrag.show(getFragmentManager(), "Cont");
 
@@ -186,28 +190,23 @@ public class PaintActivity extends AppCompatActivity {
 
         //on new button click
         if (id == R.id.item_new) {
-
             // this if/else statement will ask the user if they want to save
             // if they have drawn something and they have not saved since
             // their last paint stroke
-            if(hasDrawn) {
+            if (hasDrawn) {
                 ContinueFragment contFrag = new ContinueFragment();
                 contFrag.show(getFragmentManager(), "Cont");
             } else {
                 OrientationFragment orientFrag = new OrientationFragment();
                 orientFrag.show(getFragmentManager(), "Orient");
             }
-
             isLoad = false;
-
             return true;
         }
-
         //on About button click
         if (id == R.id.item_about) {
             return true;
         }
-
         //on Faqs click
         if (id == R.id.item_faqs) {
             return true;
@@ -217,10 +216,22 @@ public class PaintActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStop(){
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+
+        Bitmap viewBitmap = getBitmapFromView(findViewById(R.id.drawing));
+        String viewString = bitMapToString(viewBitmap);
+        savedInstanceState.putString("viewString", viewString);
+    }
+
+    @Override
+    public void onStop() {
         // if the user closes the app with saving
         // their painting will autosave if it is not blank
-        if(hasDrawn&&willSave)
+        if (hasDrawn && willSave)
             savePainting();
 
         super.onStop();
@@ -228,7 +239,7 @@ public class PaintActivity extends AppCompatActivity {
 
     public void savePainting() {
         //Toast.makeText(this, "We've done it!", Toast.LENGTH_LONG).show();
-        String imageName = UUID.randomUUID().toString()+".png";
+        String imageName = UUID.randomUUID().toString() + ".png";
 
         PaintView paintView = (PaintView) this.findViewById(R.id.drawing);
 
@@ -236,8 +247,8 @@ public class PaintActivity extends AppCompatActivity {
         File myDir = new File(root + "/saved_images");
         myDir.mkdirs();
 
-        File file = new File (myDir, imageName);
-        if (file.exists ()) file.delete ();
+        File file = new File(myDir, imageName);
+        if (file.exists()) file.delete();
         try {
             FileOutputStream out = new FileOutputStream(file);
             paintView.getCanvasBitmap().compress(Bitmap.CompressFormat.PNG, 90, out);
@@ -255,17 +266,18 @@ public class PaintActivity extends AppCompatActivity {
         }
 
         paintView.destroyDrawingCache();
-
     }
 
     public void newPainting(boolean isPortraitCheck) {
         //Intent object is used to create and start a new Activity
-
         Intent paintIntent = new Intent(this, PaintActivity.class);
 
         // checks to see if user selected their painting
         // to be portrait or landscape
-        paintIntent.putExtra("isPortrait", isPortraitCheck);
+        if(isPortraitCheck)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        else
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         // checks to see if new painting
         // is a load or a new
@@ -275,20 +287,57 @@ public class PaintActivity extends AppCompatActivity {
         this.finish();
     }
 
-    public void setHasDrawn(boolean setter){
-        hasDrawn = setter;
-        //Toast.makeText(this, "We've done it!", Toast.LENGTH_SHORT).show();
+    private Bitmap getBitmapFromView(View view) {
+        //Define a bitmap with the same size as the view
+        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
+        //Bind a canvas to it
+        Canvas canvas = new Canvas(returnedBitmap);
+        //Get the view's background
+        Drawable bgDrawable =view.getBackground();
+        if (bgDrawable!=null)
+            //has background drawable, then draw it on the canvas
+            bgDrawable.draw(canvas);
+        else
+            //does not have background drawable, then draw white background on the canvas
+            canvas.drawColor(Color.WHITE);
+        // draw the view on the canvas
+        view.draw(canvas);
+        //return the bitmap
+        return returnedBitmap;
     }
 
-    public boolean getHasDrawn(){
+    private String bitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte [] b=baos.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
+    }
+
+    public Bitmap stringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
+    public void setHasDrawn(boolean setter) {
+        hasDrawn = setter;
+    }
+
+    public boolean getHasDrawn() {
         return hasDrawn;
     }
 
-    public void setWillSave(boolean setter){
+    public void setWillSave(boolean setter) {
         willSave = setter;
     }
 
-    public boolean getWasLoad(){
+    public boolean getWasLoad() {
         return wasLoad;
     }
 
