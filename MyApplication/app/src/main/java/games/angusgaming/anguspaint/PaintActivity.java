@@ -81,12 +81,20 @@ public class PaintActivity extends AppCompatActivity {
         Intent intent = getIntent();
         isPortrait = intent.getBooleanExtra("isPortrait", true);
 
+        // checks to see if user selected their painting
+        // to be portrait or landscape
+        if(isPortrait)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        else
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
         //check to see if this painting is supposed to load a picture
         wasLoad = intent.getBooleanExtra("isLoad", false);
 
         hasDrawn = false;
         willSave = true;
 
+        // if this is a load, open up an image application
         if (wasLoad) {
             // Create intent to Open Image applications like Gallery, Google Photos
             Intent galleryIntent = new Intent(Intent.ACTION_PICK,
@@ -133,6 +141,8 @@ public class PaintActivity extends AppCompatActivity {
                         .decodeFile(imgDecodableString));
 
                 this.findViewById(R.id.drawing).setBackground(drawable);
+
+                willSave = true;
 
             } else {
                 Toast.makeText(this, "You haven't picked Image",
@@ -285,13 +295,6 @@ public class PaintActivity extends AppCompatActivity {
     public void newPainting(boolean isPortraitCheck) {
         //Intent object is used to create and start a new Activity
         Intent paintIntent = new Intent(this, PaintActivity.class);
-
-        // checks to see if user selected their painting
-        // to be portrait or landscape
-        if(isPortraitCheck)
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        else
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         paintIntent.putExtra("isPortrait", isPortraitCheck);
 

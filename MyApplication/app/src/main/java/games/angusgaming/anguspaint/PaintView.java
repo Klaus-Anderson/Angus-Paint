@@ -9,6 +9,7 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * Created by Harry on 3/9/2016.
@@ -19,6 +20,8 @@ import android.view.View;
  *
  */
 public class PaintView extends View {
+
+    private boolean isCreated;
 
     // The Canvas class holds the "draw" calls.
     // To draw something, you need 4 basic components:
@@ -59,22 +62,28 @@ public class PaintView extends View {
         super(context, attrs);
         brushSize = 20 ;
         setUpCanvas();
+
+        isCreated = false;
     }
 
     //On creation of the view, will be called when the custom view is assigned a size
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+        if(!isCreated) {
+            super.onSizeChanged(w, h, oldw, oldh);
 
-        // Possible bitmap configurations. A bitmap configuration describes how pixels are stored.
-        // This affects the quality (color depth) as well as the ability to display transparent/translucent colors.
-        canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            // Possible bitmap configurations. A bitmap configuration describes how pixels are stored.
+            // This affects the quality (color depth) as well as the ability to display transparent/translucent colors.
+            canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 
-        drawCanvas = new Canvas(canvasBitmap);
+            drawCanvas = new Canvas(canvasBitmap);
 
-        // by default have the canvas be entirely white
-        if(!((PaintActivity)getContext()).getWasLoad())
-            whiteBackground();
+            // by default have the canvas be entirely white
+            if (!((PaintActivity) getContext()).getWasLoad())
+                whiteBackground();
+
+            isCreated = true;
+        }
     }
 
     public void whiteBackground() {
