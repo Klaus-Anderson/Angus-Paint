@@ -5,20 +5,26 @@
     <!-- load item,  loads an image from
      phone storage and paint on it with the app -->
     <item android:id="@+id/item_load"
-        android:title="Load"
+        android:title="@string/load"
         android:icon="@drawable/ic_file_download_black_24dp"
         app:showAsAction="always"/>
 
     <!-- new item, opens a new painting-->
     <item android:id="@+id/item_save"
-        android:title="Save"
+        android:title="@string/save"
         android:icon="@drawable/ic_save_black_24dp"
         app:showAsAction="always"/>
 
     <!-- save item, save an image to the phone-->
     <item android:id="@+id/item_new"
-        android:title="New"
+        android:title="@string/neww"
         android:icon="@drawable/ic_create_black_24dp"
+        app:showAsAction="always"/>
+
+    <!-- save item, save an image to the phone-->
+    <item android:id="@+id/brush_editor"
+        android:title="@string/brush_editor"
+        android:icon="@drawable/ic_palette_black_24dp"
         app:showAsAction="always"/>
 
     <!-- About, belongs in the Overflow Menu-->

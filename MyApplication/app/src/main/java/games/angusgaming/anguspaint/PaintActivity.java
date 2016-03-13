@@ -198,6 +198,11 @@ public class PaintActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if ( id == R.id.brush_editor){
+            PaletteFragment paletFrag = new PaletteFragment();
+            paletFrag.show(getFragmentManager(), "Cont");
+        }
+
         //on load button click
         if (id == R.id.item_load) {
             // this if/else statement will ask the user if they want to save
@@ -302,9 +307,7 @@ public class PaintActivity extends AppCompatActivity {
         this.finish();
     }
 
-    public void setHasDrawn(boolean setter) {
-        hasDrawn = setter;
-    }
+    public void setHasDrawn(boolean setter) { hasDrawn = setter; }
 
     public boolean getHasDrawn() {
         return hasDrawn;
