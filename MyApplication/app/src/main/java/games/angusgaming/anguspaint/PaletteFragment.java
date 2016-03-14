@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 /**
  * Created by Harry on 3/13/2016.
@@ -44,6 +47,29 @@ public class PaletteFragment extends DialogFragment{
         colorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                AmbilWarnaDialog colorPicker =
+                        new AmbilWarnaDialog(getActivity(),
+                                ((PaintActivity)getActivity()).getBrushColor(),
+                                new AmbilWarnaDialog.OnAmbilWarnaListener(){
+                            @Override
+                            public void onOk(AmbilWarnaDialog dialog, int color) {
+                                // color is the color selected by the user.
+                                ((PaintActivity)PaletteFragment.this.getActivity()).setColor(color);
+                                ((PaintActivity)PaletteFragment.this.getActivity())
+                                        .getFragmentManager().beginTransaction()
+                                        .remove(PaletteFragment.this).commit();
+                            }
+
+                            @Override
+                            public void onCancel(AmbilWarnaDialog dialog) {
+                                // cancel was selected by the user
+                                ((PaintActivity)PaletteFragment.this.getActivity())
+                                        .getFragmentManager().beginTransaction()
+                                        .remove(PaletteFragment.this).commit();
+                            }
+                        });
+                colorPicker.show();
             }
         });
 

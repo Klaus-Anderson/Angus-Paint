@@ -51,9 +51,6 @@ public class PaintView extends View {
     // This is the Bitmap for the Canvas object
     private Bitmap canvasBitmap;
 
-    // set the initial color as black
-    private int paintColor = 0xFF000000;
-
     //declare brush size float
     private float brushSize;
 
@@ -146,7 +143,9 @@ public class PaintView extends View {
         paintingPaint = new Paint();
         canvasPaint = new Paint();
 
-        paintingPaint.setColor(paintColor);
+        //set the Initial brush color as black
+        paintingPaint.setColor(Color.BLACK);
+
         paintingPaint.setStrokeWidth(brushSize);
 
         //Set the paint's style, used for controlling how primitives' geometries are interpreted
@@ -162,7 +161,12 @@ public class PaintView extends View {
         paintPath = new Path();
     }
 
+    public void setColor(int color){
+        paintingPaint.setColor(color);
+    }
+
     public Bitmap getCanvasBitmap(){
         return canvasBitmap;
     }
+
 }

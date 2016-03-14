@@ -42,6 +42,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -64,6 +65,7 @@ import java.util.UUID;
 public class PaintActivity extends AppCompatActivity {
 
     private boolean hasDrawn, isLoad, wasLoad, willSave, isPortrait;
+    private int brushColor;
 
     private static int RESULT_LOAD_IMG = 1;
     String imgDecodableString;
@@ -98,6 +100,8 @@ public class PaintActivity extends AppCompatActivity {
             // Start the Intent
             startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
         }
+
+        brushColor = Color.BLACK;
 
         // this code will set the apps content view as the
         // activity_paint layout xml
@@ -305,6 +309,15 @@ public class PaintActivity extends AppCompatActivity {
 
         startActivity(paintIntent);
         this.finish();
+    }
+
+    public void setColor(int color){
+        brushColor = color;
+        ((PaintView) findViewById(R.id.drawing)).setColor(color);
+    }
+
+    public int getBrushColor(){
+        return brushColor;
     }
 
     public void setHasDrawn(boolean setter) { hasDrawn = setter; }
