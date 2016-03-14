@@ -42,7 +42,9 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -147,14 +149,14 @@ public class PaintActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "You haven't picked Image",
                         Toast.LENGTH_LONG).show();
-                //set paintView background as white if picture fails to load
-                ((PaintView)findViewById(R.id.drawing)).whiteBackground();
+                isLoad = false;
+                newPainting(isPortrait);
             }
         } catch (Exception e) {
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG)
                     .show();
-            //set paintView background as white if picture fails to load
-            ((PaintView)findViewById(R.id.drawing)).whiteBackground();
+            isLoad = false;
+            newPainting(isPortrait);
         }
     }
 
@@ -283,14 +285,18 @@ public class PaintActivity extends AppCompatActivity {
         PaintView paintView = (PaintView) this.findViewById(R.id.drawing);
 
         String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/saved_images");
+        File myDir = new File(root + "/angus_paint");
         myDir.mkdirs();
 
         File file = new File(myDir, imageName);
         if (file.exists()) file.delete();
         try {
             FileOutputStream out = new FileOutputStream(file);
-            paintView.getCanvasBitmap().compress(Bitmap.CompressFormat.PNG, 90, out);
+            overlay(convertToBitmap(paintView.getBackground(),
+                    paintView.getWidth(),
+                    paintView.getHeight()),
+                    paintView.getCanvasBitmap())
+                    .compress(Bitmap.CompressFormat.PNG, 90, out);
             out.flush();
             out.close();
 
@@ -305,6 +311,23 @@ public class PaintActivity extends AppCompatActivity {
         }
 
         paintView.destroyDrawingCache();
+    }
+
+    public Bitmap convertToBitmap(Drawable drawable, int widthPixels, int heightPixels) {
+        Bitmap mutableBitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(mutableBitmap);
+        drawable.setBounds(0, 0, widthPixels, heightPixels);
+        drawable.draw(canvas);
+
+        return mutableBitmap;
+    }
+
+    public static Bitmap overlay(Bitmap bmp1, Bitmap bmp2) {
+        Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
+        Canvas canvas = new Canvas(bmOverlay);
+        canvas.drawBitmap(bmp1, new Matrix(), null);
+        canvas.drawBitmap(bmp2, 0, 0, null);
+        return bmOverlay;
     }
 
     public void newPainting(boolean isPortraitCheck) {
@@ -352,4 +375,7 @@ public class PaintActivity extends AppCompatActivity {
         return wasLoad;
     }
 
+    public boolean isPortrait() {
+        return isPortrait;
+    }
 }
