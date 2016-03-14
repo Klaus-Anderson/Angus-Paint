@@ -248,10 +248,20 @@ public class PaintActivity extends AppCompatActivity {
         }
         //on About button click
         if (id == R.id.item_about) {
+            TextFragment tFrag = new TextFragment();
+            Bundle args = new Bundle();
+            args.putInt("stringID", R.string.about_info);
+            tFrag.setArguments(args);
+            tFrag.show(getFragmentManager(), "Cont");
             return true;
         }
         //on Faqs click
         if (id == R.id.item_faqs) {
+            TextFragment tFrag = new TextFragment();
+            Bundle args = new Bundle();
+            args.putInt("stringID", R.string.faqs_info);
+            tFrag.setArguments(args);
+            tFrag.show(getFragmentManager(), "Cont");
             return true;
         }
         return super.onOptionsItemSelected(item);

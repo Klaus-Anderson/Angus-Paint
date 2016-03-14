@@ -15,4 +15,16 @@
     <string name="brush_size">Brush Size</string>
     <string name="color_picker">Color Picker</string>
     <string name="set">Set</string>
+    <string name="null_null">null</string>
+    <string name="about_info">Angus Paint © 2016\n
+        Angus Gaming\n
+        Developed by Harry Cliff</string>
+    <string name="faqs_info">Paint your own masterpiece!\n
+        -Use your finger as your painting tool\n
+        -Press the save button to save your\npainting to your device\n
+        -Press the load button to paint upon\na picture on your device\n
+        -Press the new button to start\na new masterpiece\n
+        -Upon starting a new painting, you\ncan change your painting\'s orientation\n
+        -Press the palette button to change\nyour brush size or color\n
+        -Have fun, and please rate on Google Play!</string>
 </resources>
