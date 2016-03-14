@@ -169,4 +169,13 @@ public class PaintView extends View {
         return canvasBitmap;
     }
 
+    public float getBrushSize(){
+        return brushSize;
+    }
+
+    public void setBrushSize(float bSize){
+        brushSize = bSize;
+        paintingPaint.setStrokeWidth(brushSize);
+    }
+
 }

@@ -320,6 +320,14 @@ public class PaintActivity extends AppCompatActivity {
         return brushColor;
     }
 
+    public void setBrushSize(float bSize){
+        ((PaintView) findViewById(R.id.drawing)).setBrushSize(bSize);
+    }
+
+    public float getBrushSize(){
+        return ((PaintView) findViewById(R.id.drawing)).getBrushSize();
+    }
+
     public void setHasDrawn(boolean setter) { hasDrawn = setter; }
 
     public boolean getHasDrawn() {

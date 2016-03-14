@@ -47,6 +47,9 @@ public class PaletteFragment extends DialogFragment{
         colorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((PaintActivity)PaletteFragment.this.getActivity())
+                        .getFragmentManager().beginTransaction()
+                        .hide(PaletteFragment.this).commit();
 
                 AmbilWarnaDialog colorPicker =
                         new AmbilWarnaDialog(getActivity(),
@@ -80,6 +83,16 @@ public class PaletteFragment extends DialogFragment{
         brushButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((PaintActivity)PaletteFragment.this.getActivity())
+                        .getFragmentManager().beginTransaction()
+                        .hide(PaletteFragment.this).commit();
+
+                BrushSizeFragment brushFrag = new BrushSizeFragment();
+                brushFrag.show(PaletteFragment.this.getActivity().getFragmentManager(), "Diag");
+
+                ((PaintActivity)PaletteFragment.this.getActivity())
+                        .getFragmentManager().beginTransaction()
+                        .remove(PaletteFragment.this).commit();
             }
         });
 
