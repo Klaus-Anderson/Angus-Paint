@@ -128,8 +128,6 @@ public class PaletteFragment extends DialogFragment{
 
         linLayout.addView(buttonNameLayout);
 
-
-
         return linLayout;
     }
 }

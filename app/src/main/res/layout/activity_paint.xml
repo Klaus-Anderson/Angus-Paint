@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="games.angusgaming.anguspaint.PaintActivity">
+    tools:context="gms.angusgaming.anguspaint.PaintActivity">
 
     <!-- This toolbar will function as the App/Action Bar-->
     <android.support.v7.widget.Toolbar
@@ -17,7 +17,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
         />
-    <games.angusgaming.anguspaint.PaintView
+    <gms.angusgaming.anguspaint.PaintView
         android:id="@+id/drawing"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
