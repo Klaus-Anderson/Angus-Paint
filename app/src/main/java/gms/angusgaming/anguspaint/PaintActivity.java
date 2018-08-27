@@ -1,4 +1,4 @@
-package games.angusgaming.anguspaint;
+package gms.angusgaming.anguspaint;
 
 /**
  * This Application is Basic Paint Application

@@ -1,4 +1,4 @@
-package games.angusgaming.anguspaint;
+package gms.angusgaming.anguspaint;
 
 import android.content.Context;
 import android.graphics.Bitmap;

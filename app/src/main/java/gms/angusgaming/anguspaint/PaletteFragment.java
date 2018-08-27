@@ -1,4 +1,4 @@
-package games.angusgaming.anguspaint;
+package gms.angusgaming.anguspaint;
 
 import android.app.ActionBar;
 import android.app.DialogFragment;
@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 

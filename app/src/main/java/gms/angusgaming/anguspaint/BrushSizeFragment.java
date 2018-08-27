@@ -1,4 +1,4 @@
-package games.angusgaming.anguspaint;
+package gms.angusgaming.anguspaint;
 
 import android.app.ActionBar;
 import android.app.DialogFragment;
@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by Harry on 3/13/2016.

@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".PaintActivity"
+        <activity android:name="games.angusgaming.gms.angusgamin.anguspaint.PaintActivity"
             android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
