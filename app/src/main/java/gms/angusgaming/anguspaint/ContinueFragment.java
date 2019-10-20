@@ -1,8 +1,6 @@
 package gms.angusgaming.anguspaint;
 
 import android.app.ActionBar;
-import android.app.DialogFragment;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -13,13 +11,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.DialogFragment;
 
 public class ContinueFragment extends DialogFragment {
-    Context mContext;
-    public ContinueFragment() {
-
-        mContext = getActivity();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -49,29 +43,26 @@ public class ContinueFragment extends DialogFragment {
         buttonLayout.addView(yesButton);
 
         //pressing Yes will prompt the user to save the picture
-        yesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // attempt to save the paint
-                ((PaintActivity) ContinueFragment.this.getActivity()).savePainting();
+        yesButton.setOnClickListener(v -> {
+            // attempt to save the paint
+            ((PaintActivity) ContinueFragment.this.getActivity()).savePainting();
 
-                // only prompt the user to make a new painting
-                // if the save is successful
-                if(!((PaintActivity) ContinueFragment.this.getActivity()).getHasDrawn()){
-                    ((PaintActivity)ContinueFragment.this.getActivity())
-                            .getFragmentManager().beginTransaction()
-                            .hide(ContinueFragment.this).commit();
+            // only prompt the user to make a new painting
+            // if the save is successful
+            if(((PaintActivity) ContinueFragment.this.getActivity()).getHasNotDrawn()){
+                ContinueFragment.this.getActivity()
+                        .getSupportFragmentManager().beginTransaction()
+                        .hide(ContinueFragment.this).commit();
 
-                    OrientationFragment orientFrag = new OrientationFragment();
-                    orientFrag.show(ContinueFragment.this.getActivity().getFragmentManager(), "Diag");
-                }
-
-                ((PaintActivity)ContinueFragment.this.getActivity())
-                        .getFragmentManager().beginTransaction()
-                        .remove(ContinueFragment.this).commit();
-
-
+                OrientationFragment orientFrag = new OrientationFragment();
+                orientFrag.show(ContinueFragment.this.getActivity().getSupportFragmentManager(), "Diag");
             }
+
+            ContinueFragment.this.getActivity()
+                    .getSupportFragmentManager().beginTransaction()
+                    .remove(ContinueFragment.this).commit();
+
+
         });
 
         Button noButton = new Button(getActivity());
@@ -80,23 +71,20 @@ public class ContinueFragment extends DialogFragment {
         buttonLayout.addView(noButton);
 
         //pressing No will create a new paint activity without saving
-        noButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // hide the ContinueFragment,
-                // create a an OrientationFragment,
-                // then remove the ContinueFragment
-                ((PaintActivity)ContinueFragment.this.getActivity())
-                        .getFragmentManager().beginTransaction()
-                        .hide(ContinueFragment.this).commit();
+        noButton.setOnClickListener(v -> {
+            // hide the ContinueFragment,
+            // create a an OrientationFragment,
+            // then remove the ContinueFragment
+            ContinueFragment.this.getActivity()
+                    .getSupportFragmentManager().beginTransaction()
+                    .hide(ContinueFragment.this).commit();
 
-                OrientationFragment orientFrag = new OrientationFragment();
-                orientFrag.show(ContinueFragment.this.getActivity().getFragmentManager(), "Diag");
+            OrientationFragment orientFrag = new OrientationFragment();
+            orientFrag.show(ContinueFragment.this.getActivity().getSupportFragmentManager(), "Diag");
 
-                ((PaintActivity)ContinueFragment.this.getActivity())
-                        .getFragmentManager().beginTransaction()
-                        .remove(ContinueFragment.this).commit();
-            }
+            ContinueFragment.this.getActivity()
+                    .getSupportFragmentManager().beginTransaction()
+                    .remove(ContinueFragment.this).commit();
         });
 
         Button cancelButton = new Button(getActivity());
@@ -104,14 +92,9 @@ public class ContinueFragment extends DialogFragment {
         cancelButton.setTextSize(18);
         buttonLayout.addView(cancelButton);
 
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((PaintActivity)ContinueFragment.this.getActivity())
-                    .getFragmentManager().beginTransaction()
-                    .remove(ContinueFragment.this).commit();
-            }
-        });
+        cancelButton.setOnClickListener(v -> ContinueFragment.this.getActivity()
+            .getSupportFragmentManager().beginTransaction()
+            .remove(ContinueFragment.this).commit());
 
         linLayout.addView(buttonLayout);
 

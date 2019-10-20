@@ -1,8 +1,6 @@
 package gms.angusgaming.anguspaint;
 
 import android.app.ActionBar;
-import android.app.DialogFragment;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -16,16 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.fragment.app.DialogFragment;
+
 /**
  * Created by Harry on 3/13/2016.
  */
 public class BrushSizeFragment extends DialogFragment {
-    Context mContext;
     private int px;
-    public BrushSizeFragment() {
-
-        mContext = getActivity();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -112,14 +107,11 @@ public class BrushSizeFragment extends DialogFragment {
         buttonLayout.addView(setButton);
 
         //pressing Yes will prompt the user to save the picture
-        setButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((PaintActivity) getActivity()).setBrushSize(px);
-                ((PaintActivity) BrushSizeFragment.this.getActivity())
-                        .getFragmentManager().beginTransaction()
-                        .remove(BrushSizeFragment.this).commit();
-            }
+        setButton.setOnClickListener(v -> {
+            ((PaintActivity) getActivity()).setBrushSize(px);
+            BrushSizeFragment.this.getActivity()
+                    .getSupportFragmentManager().beginTransaction()
+                    .remove(BrushSizeFragment.this).commit();
         });
 
         Button cancelButton = new Button(getActivity());
@@ -128,14 +120,9 @@ public class BrushSizeFragment extends DialogFragment {
         buttonLayout.addView(cancelButton);
 
         //pressing No will create a new paint activity without saving
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((PaintActivity) BrushSizeFragment.this.getActivity())
-                        .getFragmentManager().beginTransaction()
-                        .remove(BrushSizeFragment.this).commit();
-            }
-        });
+        cancelButton.setOnClickListener(v -> BrushSizeFragment.this.getActivity()
+                .getSupportFragmentManager().beginTransaction()
+                .remove(BrushSizeFragment.this).commit());
 
         linLayout.addView(sliderLayout);
 

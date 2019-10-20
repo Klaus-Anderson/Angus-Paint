@@ -51,9 +51,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -110,7 +110,7 @@ public class PaintActivity extends AppCompatActivity {
         setContentView(R.layout.activity_paint);
 
         // this code will set this Toolbar as the Action/App
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
     }
 
@@ -206,7 +206,7 @@ public class PaintActivity extends AppCompatActivity {
 
         if ( id == R.id.brush_editor){
             PaletteFragment paletFrag = new PaletteFragment();
-            paletFrag.show(getFragmentManager(), "Cont");
+            paletFrag.show(getSupportFragmentManager(), "Cont");
         }
 
         //on load button click
@@ -216,11 +216,11 @@ public class PaintActivity extends AppCompatActivity {
             // their last paint stroke
             if (hasDrawn) {
                 ContinueFragment contFrag = new ContinueFragment();
-                contFrag.show(getFragmentManager(), "Cont");
+                contFrag.show(getSupportFragmentManager(), "Cont");
 
             } else {
                 OrientationFragment orientFrag = new OrientationFragment();
-                orientFrag.show(getFragmentManager(), "Orient");
+                orientFrag.show(getSupportFragmentManager(), "Orient");
             }
 
             isLoad = true;
@@ -240,10 +240,10 @@ public class PaintActivity extends AppCompatActivity {
             // their last paint stroke
             if (hasDrawn) {
                 ContinueFragment contFrag = new ContinueFragment();
-                contFrag.show(getFragmentManager(), "Cont");
+                contFrag.show(getSupportFragmentManager(), "Cont");
             } else {
                 OrientationFragment orientFrag = new OrientationFragment();
-                orientFrag.show(getFragmentManager(), "Orient");
+                orientFrag.show(getSupportFragmentManager(), "Orient");
             }
             isLoad = false;
             return true;
@@ -254,7 +254,7 @@ public class PaintActivity extends AppCompatActivity {
             Bundle args = new Bundle();
             args.putInt("stringID", R.string.about_info);
             tFrag.setArguments(args);
-            tFrag.show(getFragmentManager(), "Cont");
+            tFrag.show(getSupportFragmentManager(), "Cont");
             return true;
         }
         //on Faqs click
@@ -263,7 +263,7 @@ public class PaintActivity extends AppCompatActivity {
             Bundle args = new Bundle();
             args.putInt("stringID", R.string.faqs_info);
             tFrag.setArguments(args);
-            tFrag.show(getFragmentManager(), "Cont");
+            tFrag.show(getSupportFragmentManager(), "Cont");
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -272,7 +272,7 @@ public class PaintActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         // if the user closes the app with saving
-        // their painting will autosave if it is not blank
+        // their painting will auto save if it is not blank
         if (hasDrawn && willSave)
             savePainting();
 
@@ -282,7 +282,7 @@ public class PaintActivity extends AppCompatActivity {
     public void savePainting() {
         String imageName = UUID.randomUUID().toString() + ".png";
 
-        PaintView paintView = (PaintView) this.findViewById(R.id.drawing);
+        PaintView paintView = this.findViewById(R.id.drawing);
 
         String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/angus_paint");
@@ -363,8 +363,8 @@ public class PaintActivity extends AppCompatActivity {
 
     public void setHasDrawn(boolean setter) { hasDrawn = setter; }
 
-    public boolean getHasDrawn() {
-        return hasDrawn;
+    public boolean getHasNotDrawn() {
+        return !hasDrawn;
     }
 
     public void setWillSave(boolean setter) {
@@ -373,9 +373,5 @@ public class PaintActivity extends AppCompatActivity {
 
     public boolean getWasLoad() {
         return wasLoad;
-    }
-
-    public boolean isPortrait() {
-        return isPortrait;
     }
 }

@@ -1,8 +1,6 @@
 package gms.angusgaming.anguspaint;
 
 import android.app.ActionBar;
-import android.app.DialogFragment;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -12,17 +10,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.DialogFragment;
+
 /**
  * Created by Harry on 3/13/2016.
  */
 public class TextFragment extends DialogFragment {
-
-    Context mContext;
-
-    public TextFragment(){
-        mContext = getActivity();
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,

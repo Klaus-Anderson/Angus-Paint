@@ -1,8 +1,6 @@
 package gms.angusgaming.anguspaint;
 
 import android.app.ActionBar;
-import android.app.DialogFragment;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -13,19 +11,17 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+
 /**
  * Created by Harry on 3/11/2016.
  */
 public class OrientationFragment extends DialogFragment {
 
-    Context mContext;
-    public OrientationFragment() {
-
-        mContext = getActivity();
-    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         LinearLayout linLayout = new LinearLayout(getActivity());
@@ -50,24 +46,18 @@ public class OrientationFragment extends DialogFragment {
         portraitButton.setImageResource(R.drawable.ic_stay_current_portrait_black_24dp);
         buttonLayout.addView(portraitButton);
 
-        portraitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((PaintActivity) OrientationFragment.this.getActivity()).setWillSave(false);
-                ((PaintActivity) OrientationFragment.this.getActivity()).newPainting(true);
-            }
+        portraitButton.setOnClickListener(v -> {
+            ((PaintActivity) OrientationFragment.this.getActivity()).setWillSave(false);
+            ((PaintActivity) OrientationFragment.this.getActivity()).newPainting(true);
         });
 
         ImageButton landscapeButton = new ImageButton(getActivity());
         landscapeButton.setImageResource(R.drawable.ic_stay_current_landscape_black_24dp);
         buttonLayout.addView(landscapeButton);
 
-        landscapeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((PaintActivity) OrientationFragment.this.getActivity()).setWillSave(false);
-                ((PaintActivity) OrientationFragment.this.getActivity()).newPainting(false);
-            }
+        landscapeButton.setOnClickListener(v -> {
+            ((PaintActivity) OrientationFragment.this.getActivity()).setWillSave(false);
+            ((PaintActivity) OrientationFragment.this.getActivity()).newPainting(false);
         });
 
         linLayout.addView(buttonLayout);

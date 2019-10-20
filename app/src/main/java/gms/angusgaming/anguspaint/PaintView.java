@@ -103,7 +103,7 @@ public class PaintView extends View {
     public boolean onTouchEvent(MotionEvent event) {
 
         //this will tell the activity that something has been drawn,
-        if(!((PaintActivity)getContext()).getHasDrawn())
+        if(((PaintActivity) getContext()).getHasNotDrawn())
             ((PaintActivity)getContext()).setHasDrawn(true);
 
         // TouchX is x coordinate location of Touch event, relative to the PaintView
@@ -139,7 +139,7 @@ public class PaintView extends View {
         //determining which methods to set is through combing of Paint class API
         //http://developer.android.com/reference/android/graphics/Paint.html
 
-        //intialize Paint objects
+        //initialize Paint objects
         paintingPaint = new Paint();
         canvasPaint = new Paint();
 
@@ -157,7 +157,7 @@ public class PaintView extends View {
         // set the paint's line cap style, used whenever the paint's style is Stroke or StrokeAndFill.
         paintingPaint.setStrokeCap(Paint.Cap.ROUND);
 
-        //intialize Path object
+        //initialize Path object
         paintPath = new Path();
     }
 

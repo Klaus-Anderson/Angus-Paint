@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Angus-Paint.iml" filepath="$PROJECT_DIR$/Angus-Paint.iml" />
-      <module fileurl="file://C:\Users\Harry Cliff\Documents\GitHub\Angus-Paint\MyApplication.iml" filepath="C:\Users\Harry Cliff\Documents\GitHub\Angus-Paint\MyApplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
