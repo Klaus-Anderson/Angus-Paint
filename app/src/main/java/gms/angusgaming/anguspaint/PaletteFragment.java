@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
@@ -20,14 +21,9 @@ import yuku.ambilwarna.AmbilWarnaDialog;
  * Created by Harry on 3/13/2016.
  */
 public class PaletteFragment extends DialogFragment {
-    Context mContext;
-    public PaletteFragment() {
-
-        mContext = getActivity();
-    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         LinearLayout linLayout = new LinearLayout(getActivity());
 
@@ -45,32 +41,34 @@ public class PaletteFragment extends DialogFragment {
         buttonLayout.addView(colorButton);
 
         colorButton.setOnClickListener(v -> {
-            PaletteFragment.this.getActivity()
-                    .getSupportFragmentManager().beginTransaction()
-                    .hide(PaletteFragment.this).commit();
+            if (getActivity() != null) {
+                getActivity()
+                        .getSupportFragmentManager().beginTransaction()
+                        .hide(PaletteFragment.this).commit();
 
-            AmbilWarnaDialog colorPicker =
-                    new AmbilWarnaDialog(getActivity(),
-                            ((PaintActivity)getActivity()).getBrushColor(),
-                            new AmbilWarnaDialog.OnAmbilWarnaListener(){
-                        @Override
-                        public void onOk(AmbilWarnaDialog dialog, int color) {
-                            // color is the color selected by the user.
-                            ((PaintActivity)PaletteFragment.this.getActivity()).setColor(color);
-                            PaletteFragment.this.getActivity()
-                                    .getSupportFragmentManager().beginTransaction()
-                                    .remove(PaletteFragment.this).commit();
-                        }
+                AmbilWarnaDialog colorPicker =
+                        new AmbilWarnaDialog(getActivity(),
+                                ((PaintActivity) getActivity()).getBrushColor(),
+                                new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                                    @Override
+                                    public void onOk(AmbilWarnaDialog dialog, int color) {
+                                        // color is the color selected by the user.
+                                        ((PaintActivity) PaletteFragment.this.getActivity()).setColor(color);
+                                        PaletteFragment.this.getActivity()
+                                                .getSupportFragmentManager().beginTransaction()
+                                                .remove(PaletteFragment.this).commit();
+                                    }
 
-                        @Override
-                        public void onCancel(AmbilWarnaDialog dialog) {
-                            // cancel was selected by the user
-                            PaletteFragment.this.getActivity()
-                                    .getSupportFragmentManager().beginTransaction()
-                                    .remove(PaletteFragment.this).commit();
-                        }
-                    });
-            colorPicker.show();
+                                    @Override
+                                    public void onCancel(AmbilWarnaDialog dialog) {
+                                        // cancel was selected by the user
+                                        PaletteFragment.this.getActivity()
+                                                .getSupportFragmentManager().beginTransaction()
+                                                .remove(PaletteFragment.this).commit();
+                                    }
+                                });
+                colorPicker.show();
+            }
         });
 
         ImageButton brushButton = new ImageButton(getActivity());
@@ -78,16 +76,18 @@ public class PaletteFragment extends DialogFragment {
         buttonLayout.addView(brushButton);
 
         brushButton.setOnClickListener(v -> {
-            PaletteFragment.this.getActivity()
-                    .getSupportFragmentManager().beginTransaction()
-                    .hide(PaletteFragment.this).commit();
+            if (getActivity() != null) {
+                PaletteFragment.this.getActivity()
+                        .getSupportFragmentManager().beginTransaction()
+                        .hide(PaletteFragment.this).commit();
 
-            BrushSizeFragment brushFrag = new BrushSizeFragment();
-            brushFrag.show(PaletteFragment.this.getActivity().getSupportFragmentManager(), "Diag");
+                BrushSizeFragment brushFrag = new BrushSizeFragment();
+                brushFrag.show(PaletteFragment.this.getActivity().getSupportFragmentManager(), "Diag");
 
-            PaletteFragment.this.getActivity()
-                    .getSupportFragmentManager().beginTransaction()
-                    .remove(PaletteFragment.this).commit();
+                PaletteFragment.this.getActivity()
+                        .getSupportFragmentManager().beginTransaction()
+                        .remove(PaletteFragment.this).commit();
+            }
         });
 
         linLayout.addView(buttonLayout);

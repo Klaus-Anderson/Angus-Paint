@@ -1,5 +1,6 @@
 package gms.angusgaming.anguspaint;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -99,6 +100,7 @@ public class PaintView extends View {
     }
 
     //Implement this method to handle touch screen motion events.
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 

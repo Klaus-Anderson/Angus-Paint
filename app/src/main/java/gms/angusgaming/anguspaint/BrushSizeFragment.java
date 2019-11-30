@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 /**
@@ -22,8 +23,9 @@ import androidx.fragment.app.DialogFragment;
 public class BrushSizeFragment extends DialogFragment {
     private int px;
 
+    @SuppressWarnings("ConstantConditions")
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         LinearLayout linLayout= new LinearLayout(getActivity());
@@ -34,7 +36,7 @@ public class BrushSizeFragment extends DialogFragment {
 
         TextView textView = new TextView(getActivity());
         textView.setText(R.string.brush_size);
-        textView.setGravity(Gravity.CENTER);;
+        textView.setGravity(Gravity.CENTER);
         textView.setTextSize(18);
         textView.setTextColor(Color.BLACK);
 
@@ -62,13 +64,16 @@ public class BrushSizeFragment extends DialogFragment {
         brushWidthSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                DisplayMetrics displayMetrics = BrushSizeFragment.this.getActivity().
-                        getResources().getDisplayMetrics();
-                // (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)==3.3
-                // may depend on screen
-                px = Math.round((int) ((progress) * ((displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT) / 1.65)) + 1);
-                brushSizeText.setText(px + "px");
-                brushImage.setLayoutParams(new LinearLayout.LayoutParams(px, px));
+                if(BrushSizeFragment.this.getActivity() != null) {
+                    DisplayMetrics displayMetrics = BrushSizeFragment.this.getActivity().
+                            getResources().getDisplayMetrics();
+                    // (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)==3.3
+                    // may depend on screen
+                    px = Math.round((int) ((progress) * ((displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT) / 1.65)) + 1);
+                    brushSizeText.setText(BrushSizeFragment.this.getActivity().
+                            getResources().getString(R.string.px, String.valueOf(px)));
+                    brushImage.setLayoutParams(new LinearLayout.LayoutParams(px, px));
+                }
             }
 
             @Override

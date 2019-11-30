@@ -32,7 +32,7 @@ public class OrientationFragment extends DialogFragment {
 
         TextView orientationTextView = new TextView(getActivity());
         orientationTextView.setText(R.string.which_orientation);
-        orientationTextView.setGravity(Gravity.CENTER);;
+        orientationTextView.setGravity(Gravity.CENTER);
         orientationTextView.setTextSize(18);
         orientationTextView.setTextColor(Color.BLACK);
 
@@ -47,8 +47,10 @@ public class OrientationFragment extends DialogFragment {
         buttonLayout.addView(portraitButton);
 
         portraitButton.setOnClickListener(v -> {
-            ((PaintActivity) OrientationFragment.this.getActivity()).setWillSave(false);
-            ((PaintActivity) OrientationFragment.this.getActivity()).newPainting(true);
+            if(getActivity()!=null) {
+                ((PaintActivity) getActivity()).setWillSave(false);
+                ((PaintActivity) OrientationFragment.this.getActivity()).newPainting(true);
+            }
         });
 
         ImageButton landscapeButton = new ImageButton(getActivity());
@@ -56,8 +58,10 @@ public class OrientationFragment extends DialogFragment {
         buttonLayout.addView(landscapeButton);
 
         landscapeButton.setOnClickListener(v -> {
-            ((PaintActivity) OrientationFragment.this.getActivity()).setWillSave(false);
-            ((PaintActivity) OrientationFragment.this.getActivity()).newPainting(false);
+            if(getActivity()!=null) {
+                ((PaintActivity) getActivity()).setWillSave(false);
+                ((PaintActivity) getActivity()).newPainting(false);
+            }
         });
 
         linLayout.addView(buttonLayout);

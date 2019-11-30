@@ -27,4 +27,5 @@
         -Upon starting a new painting, you\ncan change your painting\'s orientation\n
         -Press the palette button to change\nyour brush size or color\n
         -Have fun, and please rate on Google Play!</string>
+    <string name="px">%s px</string>
 </resources>

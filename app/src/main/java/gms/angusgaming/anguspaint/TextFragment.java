@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 /**
@@ -18,7 +19,7 @@ import androidx.fragment.app.DialogFragment;
 public class TextFragment extends DialogFragment {
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         LinearLayout linLayout = new LinearLayout(getActivity());
@@ -28,13 +29,14 @@ public class TextFragment extends DialogFragment {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
         TextView tv = new TextView(getActivity());
-        tv.setText(getArguments().getInt("stringID", R.string.null_null));
-        tv.setTextSize(15);
-        tv.setTextColor(Color.BLACK);
-        tv.setGravity(Gravity.CENTER);
+        if (getArguments() != null) {
+            tv.setText(getArguments().getInt("stringID", R.string.null_null));
+            tv.setTextSize(15);
+            tv.setTextColor(Color.BLACK);
+            tv.setGravity(Gravity.CENTER);
 
-        linLayout.addView(tv);
-
+            linLayout.addView(tv);
+        }
         return linLayout;
     }
 }
