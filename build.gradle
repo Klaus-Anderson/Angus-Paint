@@ -1,23 +1,43 @@
+apply plugin: 'com.android.application'
+
 buildscript {
     repositories {
         jcenter()
-        google()
+        google() //HAVE YOU MISS IT?
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.2'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'com.android.tools.build:gradle:4.1.1'
     }
 }
 
 allprojects {
     repositories {
         jcenter()
-        google()
+        google() //HAVE YOU MISS IT?
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+android {
+    compileSdkVersion 30
+
+    defaultConfig {
+        applicationId "gms.angusgaming.anguspaint"
+        minSdkVersion 19
+        targetSdkVersion 30
+        versionCode 3
+        versionName "0.3"
+    }
+    compileOptions {
+        targetCompatibility = 1.8
+        sourceCompatibility = 1.8
+    }
+    buildToolsVersion = '29.0.2'
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.13.1'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.github.yukuku:ambilwarna:2.0.1'
 }
