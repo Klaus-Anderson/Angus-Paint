@@ -29,7 +29,7 @@ import java.io.InputStream
 import java.util.*
 
 class PaintActivity : AppCompatActivity() {
-    private var hasDrawn = false
+    var hasDrawn = findViewById<PaintView>(R.id.drawing).hasDrawn
     private var isLoad = false
     var wasLoad = false
         private set
@@ -105,7 +105,7 @@ class PaintActivity : AppCompatActivity() {
 
                     // Set the Image in ImageView after decoding the String
                     val drawable: Drawable = BitmapDrawable(resources, rotatedBitmap)
-                    findViewById<View>(R.id.drawing).background = drawable
+                    canvas.background = drawable
                     willSave = true
                 } else {
                     Toast.makeText(
@@ -194,7 +194,7 @@ class PaintActivity : AppCompatActivity() {
             // this if/else statement will ask the user if they want to save
             // if they have drawn something and they have not saved since
             // their last paint stroke
-            if (hasDrawn) {
+            if (findViewById<PaintView>(R.id.drawing).hasDrawn) {
                 val contFrag = ContinueFragment()
                 contFrag.show(supportFragmentManager, "Cont")
             } else {
@@ -236,11 +236,10 @@ class PaintActivity : AppCompatActivity() {
         requestCode: Int,
         permissions: Array<String>, grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE -> {
-                if (grantResults.size > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                ) {
+                if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
                     savePainting()
                 }
             }
@@ -319,13 +318,6 @@ class PaintActivity : AppCompatActivity() {
         set(bSize) {
             (findViewById<View>(R.id.drawing) as PaintView).brushSize = bSize
         }
-
-    fun setHasDrawn(setter: Boolean) {
-        hasDrawn = setter
-    }
-
-    val hasNotDrawn: Boolean
-        get() = !hasDrawn
 
     fun setWillSave(setter: Boolean) {
         willSave = setter

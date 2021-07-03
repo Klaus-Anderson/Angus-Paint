@@ -18,21 +18,19 @@ class TextFragment : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        val linLayout = LinearLayout(activity)
-        linLayout.orientation = LinearLayout.VERTICAL
-        linLayout.layoutParams = ActionBar.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        val tv = TextView(activity)
-        if (arguments != null) {
-            tv.setText(arguments!!.getInt("stringID", R.string.null_null))
-            tv.textSize = 15f
-            tv.setTextColor(Color.BLACK)
-            tv.gravity = Gravity.CENTER
-            linLayout.addView(tv)
+    ): View {
+        return LinearLayout(activity).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = ActionBar.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            addView(TextView(activity).apply {
+                setText(arguments?.getInt("stringID", R.string.null_null) ?: R.string.null_null)
+                textSize = 15f
+                setTextColor(Color.BLACK)
+                gravity = Gravity.CENTER
+            })
         }
-        return linLayout
     }
 }
