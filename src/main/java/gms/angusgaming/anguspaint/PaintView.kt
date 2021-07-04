@@ -48,7 +48,7 @@ class PaintView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     private val paintingPaint = Paint().apply {
         //set the Initial brush color as black
         color = Color.BLACK
-        strokeWidth = brushSize
+        strokeWidth = 20f
 
         //Set the paint's style, used for controlling how primitives' geometries are interpreted
         style = Paint.Style.STROKE
@@ -69,7 +69,14 @@ class PaintView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
         private set
 
     //declare brush size float
-    internal var brushSize = 20f
+    internal var brushSize : Float = 20f
+        set(value) {
+            field = value
+            paintingPaint.strokeWidth = field
+        }
+        get() {
+            return paintingPaint.strokeWidth
+        }
 
     //On creation of the view, will be called when the custom view is assigned a size
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {

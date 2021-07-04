@@ -19,6 +19,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -61,7 +62,55 @@ class PaintActivity : AppCompatActivity() {
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             )
             // Start the Intent
-            startActivityForResult(galleryIntent, RESULT_LOAD_IMG)
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+                try {
+                    // When an Image is picked
+                    if (it.resultCode == RESULT_OK && null != it.data) {
+                        val canvas = findViewById<View>(R.id.drawing)
+                        val imageUri = it.data!!.data
+                        val imageStream: InputStream?
+                        if (imageUri != null) {
+                            imageStream = contentResolver.openInputStream(imageUri)
+                            val selectedImage = BitmapFactory.decodeStream(imageStream)
+                            val matrix = Matrix()
+                            matrix.postRotate(90f)
+                            val scaledBitmap =
+                                Bitmap.createScaledBitmap(selectedImage, canvas.width, canvas.height, true)
+                            val rotatedBitmap = Bitmap.createBitmap(
+                                scaledBitmap,
+                                0,
+                                0,
+                                scaledBitmap.width,
+                                scaledBitmap.height,
+                                matrix,
+                                true
+                            )
+
+                            // Set the Image in ImageView after decoding the String
+                            val drawable: Drawable = BitmapDrawable(resources, rotatedBitmap)
+                            canvas.background = drawable
+                            willSave = true
+                        } else {
+                            Toast.makeText(
+                                this, "Failed to load image",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } else {
+                        Toast.makeText(
+                            this, "You haven't picked Image",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        isLoad = false
+                        newPainting(isPortrait)
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG)
+                        .show()
+                    isLoad = false
+                    newPainting(isPortrait)
+                }
+            }.launch(galleryIntent)
         }
         brushColor = Color.BLACK
 
@@ -72,58 +121,6 @@ class PaintActivity : AppCompatActivity() {
         // this code will set this Toolbar as the Action/App
         val myToolbar = findViewById<Toolbar>(R.id.my_toolbar)
         setSupportActionBar(myToolbar)
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        try {
-            // When an Image is picked
-            if (requestCode == RESULT_LOAD_IMG && resultCode == RESULT_OK && null != data) {
-                val canvas = findViewById<View>(R.id.drawing)
-                val imageUri = data.data
-                val imageStream: InputStream?
-                if (imageUri != null) {
-                    imageStream = contentResolver.openInputStream(imageUri)
-                    val selectedImage = BitmapFactory.decodeStream(imageStream)
-                    val matrix = Matrix()
-                    matrix.postRotate(90f)
-                    val scaledBitmap =
-                        Bitmap.createScaledBitmap(selectedImage, canvas.width, canvas.height, true)
-                    val rotatedBitmap = Bitmap.createBitmap(
-                        scaledBitmap,
-                        0,
-                        0,
-                        scaledBitmap.width,
-                        scaledBitmap.height,
-                        matrix,
-                        true
-                    )
-
-                    // Set the Image in ImageView after decoding the String
-                    val drawable: Drawable = BitmapDrawable(resources, rotatedBitmap)
-                    canvas.background = drawable
-                    willSave = true
-                } else {
-                    Toast.makeText(
-                        this, "Failed to load image",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            } else {
-                Toast.makeText(
-                    this, "You haven't picked Image",
-                    Toast.LENGTH_LONG
-                ).show()
-                isLoad = false
-                newPainting(isPortrait)
-            }
-        } catch (e: Exception) {
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG)
-                .show()
-            isLoad = false
-            newPainting(isPortrait)
-        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -324,8 +321,8 @@ class PaintActivity : AppCompatActivity() {
         return findViewById<PaintView>(R.id.drawing).hasDrawn
     }
 
-    fun setHasDrawn(hasDrawn : Boolean) {
-        findViewById<PaintView>(R.id.drawing).hasDrawn = hasDrawn
+    private fun setHasDrawn(_hasDrawn : Boolean) {
+        findViewById<PaintView>(R.id.drawing).hasDrawn = _hasDrawn
     }
 
     companion object {
