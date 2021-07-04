@@ -46,18 +46,18 @@ class ContinueFragment : DialogFragment() {
 
                             // only prompt the user to make a new painting
                             // if the save is successful
-                            if (!(this@ContinueFragment.activity as PaintActivity?)!!.hasDrawn) {
+                            if (!(this@ContinueFragment.activity as PaintActivity?)!!.hasDrawn()) {
                                 (this@ContinueFragment.activity as PaintActivity)
-                                    .getSupportFragmentManager().beginTransaction()
+                                    .supportFragmentManager.beginTransaction()
                                     .hide(this@ContinueFragment).commit()
                                 val orientFrag = OrientationFragment()
                                 orientFrag.show(
-                                    (this@ContinueFragment.activity as PaintActivity).getSupportFragmentManager(),
-                                    "Diag"
+                                    (this@ContinueFragment.activity as PaintActivity).supportFragmentManager,
+                                    "Dialog"
                                 )
                             }
                             (this@ContinueFragment.activity as PaintActivity)
-                                .getSupportFragmentManager().beginTransaction()
+                                .supportFragmentManager.beginTransaction()
                                 .remove(this@ContinueFragment).commit()
                         }
                     }
@@ -73,12 +73,12 @@ class ContinueFragment : DialogFragment() {
                             // create a an OrientationFragment,
                             // then remove the ContinueFragment
                             activity!!
-                                .getSupportFragmentManager().beginTransaction()
+                                .supportFragmentManager.beginTransaction()
                                 .hide(this@ContinueFragment).commit()
                             val orientFrag = OrientationFragment()
-                            orientFrag.show(this@ContinueFragment.activity!!.supportFragmentManager, "Diag")
+                            orientFrag.show(this@ContinueFragment.activity!!.supportFragmentManager, "Dialog")
                             this@ContinueFragment.activity!!
-                                .getSupportFragmentManager().beginTransaction()
+                                .supportFragmentManager.beginTransaction()
                                 .remove(this@ContinueFragment).commit()
                         }
                     }
@@ -88,7 +88,7 @@ class ContinueFragment : DialogFragment() {
                     setText(R.string.cancel)
                     textSize = 18f
                     setOnClickListener { v: View? ->
-                        activity?.getSupportFragmentManager()?.beginTransaction()?.remove(this@ContinueFragment)
+                        activity?.supportFragmentManager?.beginTransaction()?.remove(this@ContinueFragment)
                             ?.commit()
                     }
                 })

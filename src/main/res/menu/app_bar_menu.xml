@@ -17,7 +17,7 @@
 
     <!-- save item, save an image to the phone-->
     <item android:id="@+id/item_new"
-        android:title="@string/neww"
+        android:title="@string/new_string"
         android:icon="@drawable/ic_create_black_24dp"
         app:showAsAction="always"/>
 

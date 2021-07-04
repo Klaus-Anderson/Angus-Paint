@@ -49,14 +49,14 @@ class PaletteFragment : DialogFragment() {
                                         // color is the color selected by the user.
                                         (this@PaletteFragment.activity as PaintActivity?)!!.setColor(color)
                                         this@PaletteFragment.activity!!
-                                            .getSupportFragmentManager().beginTransaction()
+                                            .supportFragmentManager.beginTransaction()
                                             .remove(this@PaletteFragment).commit()
                                     }
 
                                     override fun onCancel(dialog: AmbilWarnaDialog) {
                                         // cancel was selected by the user
                                         this@PaletteFragment.activity!!
-                                            .getSupportFragmentManager().beginTransaction()
+                                            .supportFragmentManager.beginTransaction()
                                             .remove(this@PaletteFragment).commit()
                                     }
                                 }).apply {
@@ -71,12 +71,12 @@ class PaletteFragment : DialogFragment() {
                     setOnClickListener { v: View? ->
                         if (activity != null) {
                             this@PaletteFragment.activity!!
-                                .getSupportFragmentManager().beginTransaction()
+                                .supportFragmentManager.beginTransaction()
                                 .hide(this@PaletteFragment).commit()
                             val brushFrag = BrushSizeFragment()
-                            brushFrag.show(this@PaletteFragment.activity!!.supportFragmentManager, "Diag")
+                            brushFrag.show(this@PaletteFragment.activity!!.supportFragmentManager, "Dialog")
                             this@PaletteFragment.activity!!
-                                .getSupportFragmentManager().beginTransaction()
+                                .supportFragmentManager.beginTransaction()
                                 .remove(this@PaletteFragment).commit()
                         }
                     }

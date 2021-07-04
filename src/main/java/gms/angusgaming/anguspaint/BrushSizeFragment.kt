@@ -97,7 +97,7 @@ class BrushSizeFragment : DialogFragment() {
                     setOnClickListener { v: View? ->
                         (activity as PaintActivity?)!!.brushSize = px.toFloat()
                         this@BrushSizeFragment.activity!!
-                            .getSupportFragmentManager().beginTransaction()
+                            .supportFragmentManager.beginTransaction()
                             .remove(this@BrushSizeFragment).commit()
                     }
                 })
@@ -108,7 +108,7 @@ class BrushSizeFragment : DialogFragment() {
                     textSize = 18f
                     setOnClickListener { v: View? ->
                         this@BrushSizeFragment.activity!!
-                            .getSupportFragmentManager().beginTransaction()
+                            .supportFragmentManager.beginTransaction()
                             .remove(this@BrushSizeFragment).commit()
                     }
                 })

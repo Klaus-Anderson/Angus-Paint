@@ -10,7 +10,7 @@
     <string name="which_orientation">Which orientation would you\nlike for your painting?</string>
     <string name="load">Load</string>
     <string name="save">Save</string>
-    <string name="neww">New</string>
+    <string name="new_string">New</string>
     <string name="brush_editor">Brush Editor</string>
     <string name="brush_size">Brush Size</string>
     <string name="color_picker">Color Picker</string>

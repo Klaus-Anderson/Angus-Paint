@@ -29,7 +29,6 @@ import java.io.InputStream
 import java.util.*
 
 class PaintActivity : AppCompatActivity() {
-    var hasDrawn = findViewById<PaintView>(R.id.drawing).hasDrawn
     private var isLoad = false
     var wasLoad = false
         private set
@@ -43,7 +42,6 @@ class PaintActivity : AppCompatActivity() {
 
         //Screen Orientation will be decided upon creation of a new activity
         //The default orientation on opening the app the first time will be portrait
-        val intent = intent
         isPortrait = intent.getBooleanExtra("isPortrait", true)
 
         // checks to see if user selected their painting
@@ -53,7 +51,6 @@ class PaintActivity : AppCompatActivity() {
 
         //check to see if this painting is supposed to load a picture
         wasLoad = intent.getBooleanExtra("isLoad", false)
-        hasDrawn = false
         willSave = true
 
         // if this is a load, open up an image application
@@ -164,8 +161,8 @@ class PaintActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
         if (id == R.id.brush_editor) {
-            val paletFrag = PaletteFragment()
-            paletFrag.show(supportFragmentManager, "Cont")
+            val paletteFragment = PaletteFragment()
+            paletteFragment.show(supportFragmentManager, "Cont")
         }
 
         //on load button click
@@ -173,7 +170,7 @@ class PaintActivity : AppCompatActivity() {
             // this if/else statement will ask the user if they want to save
             // if they have drawn something and they have not saved since
             // their last paint stroke
-            if (hasDrawn) {
+            if (hasDrawn()) {
                 val contFrag = ContinueFragment()
                 contFrag.show(supportFragmentManager, "Cont")
             } else {
@@ -228,7 +225,7 @@ class PaintActivity : AppCompatActivity() {
     public override fun onStop() {
         // if the user closes the app with saving
         // their painting will auto save if it is not blank
-        if (hasDrawn && willSave) savePainting()
+        if (hasDrawn() && willSave) savePainting()
         super.onStop()
     }
 
@@ -280,7 +277,7 @@ class PaintActivity : AppCompatActivity() {
             out.close()
             Toast.makeText(this, "Painting saved as $imageName", Toast.LENGTH_SHORT)
                 .show()
-            hasDrawn = false
+            setHasDrawn(false)
         } catch (e: Exception) {
             Toast.makeText(this, "Painting failed to save!", Toast.LENGTH_SHORT)
                 .show()
@@ -288,7 +285,7 @@ class PaintActivity : AppCompatActivity() {
         }
     }
 
-    fun convertToBitmap(drawable: Drawable, widthPixels: Int, heightPixels: Int): Bitmap {
+    private fun convertToBitmap(drawable: Drawable, widthPixels: Int, heightPixels: Int): Bitmap {
         val mutableBitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(mutableBitmap)
         drawable.setBounds(0, 0, widthPixels, heightPixels)
@@ -321,6 +318,14 @@ class PaintActivity : AppCompatActivity() {
 
     fun setWillSave(setter: Boolean) {
         willSave = setter
+    }
+
+    fun hasDrawn() : Boolean{
+        return findViewById<PaintView>(R.id.drawing).hasDrawn
+    }
+
+    fun setHasDrawn(hasDrawn : Boolean) {
+        findViewById<PaintView>(R.id.drawing).hasDrawn = hasDrawn
     }
 
     companion object {
