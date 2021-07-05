@@ -1,7 +1,6 @@
 package gms.angusgaming.anguspaint
 
-import android.Manifest
-import android.annotation.TargetApi
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
@@ -9,9 +8,7 @@ import android.content.res.Configuration
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.KeyEvent
@@ -22,12 +19,10 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import java.io.File
-import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
 import java.util.*
+
 
 class PaintActivity : AppCompatActivity() {
     private var isLoad = false
@@ -62,7 +57,7 @@ class PaintActivity : AppCompatActivity() {
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             )
             // Start the Intent
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 try {
                     // When an Image is picked
                     if (it.resultCode == RESULT_OK && null != it.data) {
@@ -241,44 +236,44 @@ class PaintActivity : AppCompatActivity() {
     }
 
     fun savePainting() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE
-            )
-            return
-            // Permission is not granted
+
+        val fileName = UUID.randomUUID().toString()
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/angus-paint")
         }
-        val imageName = UUID.randomUUID().toString() + ".png"
+
         val paintView = findViewById<PaintView>(R.id.drawing)
-        val root = Environment.getExternalStorageDirectory().toString()
-        val myDir = File("$root/angus_paint")
-        myDir.setReadable(true)
-        if (!myDir.exists()) myDir.mkdirs()
-        val file = File(myDir, imageName)
-        try {
-            if (!file.exists()) file.createNewFile()
-            val out = FileOutputStream(file)
-            overlay(
-                convertToBitmap(
-                    paintView.background,
-                    paintView.width,
-                    paintView.height
-                ),
-                paintView.canvasBitmap
-            )
-                .compress(Bitmap.CompressFormat.PNG, 90, out)
-            out.flush()
-            out.close()
-            Toast.makeText(this, "Painting saved as $imageName", Toast.LENGTH_SHORT)
-                .show()
-            setHasDrawn(false)
-        } catch (e: Exception) {
-            Toast.makeText(this, "Painting failed to save!", Toast.LENGTH_SHORT)
-                .show()
-            e.printStackTrace()
+
+        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)?.let { uri ->
+            contentResolver.openOutputStream(uri)?.use {
+                try {
+                    // Use the compress method on the BitMap object to write image to the OutputStream
+                    overlay(
+                        convertToBitmap(
+                            paintView.background,
+                            paintView.width,
+                            paintView.height
+                        ),
+                        paintView.canvasBitmap
+                    ).compress(Bitmap.CompressFormat.PNG, 90, it)
+
+                    willSave = false
+                    Toast.makeText(this, "Painting saved as Pictures/angus-paint/$fileName", Toast.LENGTH_LONG)
+                        .show()
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Painting failed to save!", Toast.LENGTH_SHORT)
+                        .show()
+                    e.printStackTrace()
+                } finally {
+                    try {
+                        it.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
         }
     }
 
@@ -317,11 +312,11 @@ class PaintActivity : AppCompatActivity() {
         willSave = setter
     }
 
-    fun hasDrawn() : Boolean{
+    fun hasDrawn(): Boolean {
         return findViewById<PaintView>(R.id.drawing).hasDrawn
     }
 
-    private fun setHasDrawn(_hasDrawn : Boolean) {
+    private fun setHasDrawn(_hasDrawn: Boolean) {
         findViewById<PaintView>(R.id.drawing).hasDrawn = _hasDrawn
     }
 
