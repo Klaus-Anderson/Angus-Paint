@@ -57,18 +57,16 @@ class PaintActivity : AppCompatActivity() {
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             )
             // Start the Intent
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
                 try {
                     // When an Image is picked
-                    if (it.resultCode == RESULT_OK && null != it.data) {
-                        val canvas = findViewById<View>(R.id.drawing)
-                        val imageUri = it.data!!.data
-                        val imageStream: InputStream?
-                        if (imageUri != null) {
-                            imageStream = contentResolver.openInputStream(imageUri)
-                            val selectedImage = BitmapFactory.decodeStream(imageStream)
-                            val matrix = Matrix()
-                            matrix.postRotate(90f)
+                    if (activityResult.resultCode == RESULT_OK) {
+                        activityResult.data?.data?.also {
+                            val canvas = findViewById<View>(R.id.drawing)
+                            val selectedImage = BitmapFactory.decodeStream(contentResolver.openInputStream(it))
+                            val matrix = Matrix().apply {
+                                postRotate(90f)
+                            }
                             val scaledBitmap =
                                 Bitmap.createScaledBitmap(selectedImage, canvas.width, canvas.height, true)
                             val rotatedBitmap = Bitmap.createBitmap(
@@ -82,15 +80,12 @@ class PaintActivity : AppCompatActivity() {
                             )
 
                             // Set the Image in ImageView after decoding the String
-                            val drawable: Drawable = BitmapDrawable(resources, rotatedBitmap)
-                            canvas.background = drawable
+                            canvas.background = BitmapDrawable(resources, rotatedBitmap)
                             willSave = true
-                        } else {
-                            Toast.makeText(
-                                this, "Failed to load image",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
+                        } ?: Toast.makeText(
+                            this, "Failed to load image",
+                            Toast.LENGTH_LONG
+                        ).show()
                     } else {
                         Toast.makeText(
                             this, "You haven't picked Image",
@@ -99,6 +94,7 @@ class PaintActivity : AppCompatActivity() {
                         isLoad = false
                         newPainting(isPortrait)
                     }
+
                 } catch (e: Exception) {
                     Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG)
                         .show()
@@ -114,8 +110,7 @@ class PaintActivity : AppCompatActivity() {
         setContentView(R.layout.activity_paint)
 
         // this code will set this Toolbar as the Action/App
-        val myToolbar = findViewById<Toolbar>(R.id.my_toolbar)
-        setSupportActionBar(myToolbar)
+        setSupportActionBar(findViewById<Toolbar>(R.id.my_toolbar))
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -129,10 +124,10 @@ class PaintActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         Log.d("CDA", "onBackPressed Called")
-        val setIntent = Intent(Intent.ACTION_MAIN)
-        setIntent.addCategory(Intent.CATEGORY_HOME)
-        setIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(setIntent)
+        startActivity(Intent(Intent.ACTION_MAIN).apply {
+            addCategory(Intent.CATEGORY_HOME)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -151,65 +146,53 @@ class PaintActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-        if (id == R.id.brush_editor) {
-            val paletteFragment = PaletteFragment()
-            paletteFragment.show(supportFragmentManager, "Cont")
-        }
-
-        //on load button click
-        if (id == R.id.item_load) {
-            // this if/else statement will ask the user if they want to save
-            // if they have drawn something and they have not saved since
-            // their last paint stroke
-            if (hasDrawn()) {
-                val contFrag = ContinueFragment()
-                contFrag.show(supportFragmentManager, "Cont")
-            } else {
-                val orientFrag = OrientationFragment()
-                orientFrag.show(supportFragmentManager, "Orient")
+        when(item.itemId) {
+            R.id.brush_editor -> {
+                PaletteFragment().show(supportFragmentManager, "Cont")
             }
-            isLoad = true
-            return true
-        }
-        //on save button click
-        if (id == R.id.item_save) {
-            savePainting()
-            return true
-        }
-
-        //on new button click
-        if (id == R.id.item_new) {
-            // this if/else statement will ask the user if they want to save
-            // if they have drawn something and they have not saved since
-            // their last paint stroke
-            if (findViewById<PaintView>(R.id.drawing).hasDrawn) {
-                val contFrag = ContinueFragment()
-                contFrag.show(supportFragmentManager, "Cont")
-            } else {
-                val orientFrag = OrientationFragment()
-                orientFrag.show(supportFragmentManager, "Orient")
+            R.id.item_load -> {
+                // this if/else statement will ask the user if they want to save
+                // if they have drawn something and they have not saved since
+                // their last paint stroke
+                if (hasDrawn()) {
+                    ContinueFragment().show(supportFragmentManager, "Cont")
+                } else {
+                    OrientationFragment().show(supportFragmentManager, "Orient")
+                }
+                isLoad = true
             }
-            isLoad = false
-            return true
-        }
-        //on About button click
-        if (id == R.id.item_about) {
-            val tFrag = TextFragment()
-            val args = Bundle()
-            args.putInt("stringID", R.string.about_info)
-            tFrag.arguments = args
-            tFrag.show(supportFragmentManager, "Cont")
-            return true
-        }
-        //on Faqs click
-        if (id == R.id.item_faqs) {
-            val tFrag = TextFragment()
-            val args = Bundle()
-            args.putInt("stringID", R.string.faqs_info)
-            tFrag.arguments = args
-            tFrag.show(supportFragmentManager, "Cont")
-            return true
+
+            R.id.item_save -> {
+                savePainting()
+            }
+
+            R.id.item_new -> {
+                // this if/else statement will ask the user if they want to save
+                // if they have drawn something and they have not saved since
+                // their last paint stroke
+                if (findViewById<PaintView>(R.id.drawing).hasDrawn) {
+                        ContinueFragment().show(supportFragmentManager, "Cont")
+                } else {
+                        OrientationFragment().show(supportFragmentManager, "Orient")
+                }
+                isLoad = false
+                return true
+            }
+            R.id.item_about -> {
+                TextFragment().apply {
+                    arguments = Bundle().apply {
+                        putInt("stringID", R.string.about_info)
+                    }
+                }.show(supportFragmentManager, "About")
+                return true
+            }
+            R.id.item_faqs-> {
+                TextFragment().apply {
+                    arguments = Bundle().apply {
+                        putInt("stringID", R.string.faqs_info)
+                    }
+                }.show(supportFragmentManager, "FAQs")
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -316,13 +299,8 @@ class PaintActivity : AppCompatActivity() {
         return findViewById<PaintView>(R.id.drawing).hasDrawn
     }
 
-    private fun setHasDrawn(_hasDrawn: Boolean) {
-        findViewById<PaintView>(R.id.drawing).hasDrawn = _hasDrawn
-    }
-
     companion object {
         private const val MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 9001
-        private const val RESULT_LOAD_IMG = 1
         fun overlay(bmp1: Bitmap, bmp2: Bitmap?): Bitmap {
             val bmOverlay = Bitmap.createBitmap(bmp1.width, bmp1.height, bmp1.config)
             val canvas = Canvas(bmOverlay)
