@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -18,9 +19,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import java.io.IOException
-import java.io.InputStream
+import java.text.DateFormat
 import java.util.*
 
 
@@ -110,7 +110,7 @@ class PaintActivity : AppCompatActivity() {
         setContentView(R.layout.activity_paint)
 
         // this code will set this Toolbar as the Action/App
-        setSupportActionBar(findViewById<Toolbar>(R.id.my_toolbar))
+        setSupportActionBar(findViewById(R.id.my_toolbar))
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -146,7 +146,7 @@ class PaintActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.brush_editor -> {
                 PaletteFragment().show(supportFragmentManager, "Cont")
             }
@@ -171,9 +171,9 @@ class PaintActivity : AppCompatActivity() {
                 // if they have drawn something and they have not saved since
                 // their last paint stroke
                 if (findViewById<PaintView>(R.id.drawing).hasDrawn) {
-                        ContinueFragment().show(supportFragmentManager, "Cont")
+                    ContinueFragment().show(supportFragmentManager, "Cont")
                 } else {
-                        OrientationFragment().show(supportFragmentManager, "Orient")
+                    OrientationFragment().show(supportFragmentManager, "Orient")
                 }
                 isLoad = false
                 return true
@@ -186,7 +186,7 @@ class PaintActivity : AppCompatActivity() {
                 }.show(supportFragmentManager, "About")
                 return true
             }
-            R.id.item_faqs-> {
+            R.id.item_faqs -> {
                 TextFragment().apply {
                     arguments = Bundle().apply {
                         putInt("stringID", R.string.faqs_info)
@@ -219,12 +219,14 @@ class PaintActivity : AppCompatActivity() {
     }
 
     fun savePainting() {
-
-        val fileName = UUID.randomUUID().toString()
+        val fileName = "ap_" + DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+            .format(Date()).replace(" ", "_").replace("/", "_")
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/angus-paint")
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/angus-paint")
+            }
         }
 
         val paintView = findViewById<PaintView>(R.id.drawing)
@@ -243,7 +245,7 @@ class PaintActivity : AppCompatActivity() {
                     ).compress(Bitmap.CompressFormat.PNG, 90, it)
 
                     willSave = false
-                    Toast.makeText(this, "Painting saved as Pictures/angus-paint/$fileName", Toast.LENGTH_LONG)
+                    Toast.makeText(this, "Painting saved as Pictures/angus-paint/$fileName.png", Toast.LENGTH_LONG)
                         .show()
                 } catch (e: Exception) {
                     Toast.makeText(this, "Painting failed to save!", Toast.LENGTH_SHORT)
