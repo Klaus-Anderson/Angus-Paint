@@ -3,6 +3,7 @@ package gms.angusgaming.anguspaint
 import android.app.ActionBar
 import android.graphics.Color
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,7 @@ class TextFragment : DialogFragment() {
                 textSize = 15f
                 setTextColor(Color.BLACK)
                 gravity = Gravity.CENTER
+                movementMethod = LinkMovementMethod.getInstance()
             })
         }
     }

@@ -23,8 +23,12 @@ import java.io.IOException
 import java.text.DateFormat
 import java.util.*
 
-
 class PaintActivity : AppCompatActivity() {
+
+    companion object {
+        private const val MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 9001
+    }
+
     private var isLoad = false
     var wasLoad = false
         private set
@@ -32,6 +36,12 @@ class PaintActivity : AppCompatActivity() {
     private var isPortrait = false
     var brushColor = 0
         private set
+
+    var brushSize: Float
+        get() = (findViewById<View>(R.id.drawing) as PaintView).brushSize
+        set(bSize) {
+            (findViewById<View>(R.id.drawing) as PaintView).brushSize = bSize
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,37 +61,29 @@ class PaintActivity : AppCompatActivity() {
 
         // if this is a load, open up an image application
         if (wasLoad) {
-            // Create intent to Open Image applications like Gallery, Google Photos
-            val galleryIntent = Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            )
             // Start the Intent
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
                 try {
                     // When an Image is picked
                     if (activityResult.resultCode == RESULT_OK) {
                         activityResult.data?.data?.also {
-                            val canvas = findViewById<View>(R.id.drawing)
-                            val selectedImage = BitmapFactory.decodeStream(contentResolver.openInputStream(it))
-                            val matrix = Matrix().apply {
-                                postRotate(90f)
-                            }
-                            val scaledBitmap =
-                                Bitmap.createScaledBitmap(selectedImage, canvas.width, canvas.height, true)
-                            val rotatedBitmap = Bitmap.createBitmap(
-                                scaledBitmap,
-                                0,
-                                0,
-                                scaledBitmap.width,
-                                scaledBitmap.height,
-                                matrix,
-                                true
-                            )
-
                             // Set the Image in ImageView after decoding the String
-                            canvas.background = BitmapDrawable(resources, rotatedBitmap)
-                            willSave = true
+                            findViewById<View>(R.id.drawing).apply{
+                                background =
+                                    Bitmap.createScaledBitmap(
+                                        BitmapFactory.decodeStream(contentResolver.openInputStream(it)),
+                                        width, height, true).let{
+                                        BitmapDrawable(resources,
+                                            Bitmap.createBitmap(
+                                                it, 0, 0, it.width, it.height,
+                                                Matrix().apply {
+                                                    postRotate(90f)
+                                                },
+                                                true
+                                            ))
+                                    }
+                                willSave = true
+                            }
                         } ?: Toast.makeText(
                             this, "Failed to load image",
                             Toast.LENGTH_LONG
@@ -101,7 +103,10 @@ class PaintActivity : AppCompatActivity() {
                     isLoad = false
                     newPainting(isPortrait)
                 }
-            }.launch(galleryIntent)
+            }.launch(
+                // Create intent to Open Image applications like Gallery, Google Photos
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            ))
         }
         brushColor = Color.BLACK
 
@@ -232,17 +237,21 @@ class PaintActivity : AppCompatActivity() {
         val paintView = findViewById<PaintView>(R.id.drawing)
 
         contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)?.let { uri ->
-            contentResolver.openOutputStream(uri)?.use {
+            contentResolver.openOutputStream(uri)?.use { outputStream ->
                 try {
                     // Use the compress method on the BitMap object to write image to the OutputStream
-                    overlay(
-                        convertToBitmap(
-                            paintView.background,
-                            paintView.width,
-                            paintView.height
-                        ),
-                        paintView.canvasBitmap
-                    ).compress(Bitmap.CompressFormat.PNG, 90, it)
+                    val paintViewBitmap = convertToBitmap(
+                        paintView.background,
+                        paintView.width,
+                        paintView.height
+                    )
+
+                    Bitmap.createBitmap(paintViewBitmap.width, paintViewBitmap.height, paintViewBitmap.config).also{
+                        Canvas(it).apply {
+                            drawBitmap(paintViewBitmap, Matrix(), null)
+                            drawBitmap(paintView.canvasBitmap, 0f, 0f, null)
+                        }
+                    }.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
 
                     willSave = false
                     Toast.makeText(this, "Painting saved as Pictures/angus-paint/$fileName.png", Toast.LENGTH_LONG)
@@ -253,7 +262,7 @@ class PaintActivity : AppCompatActivity() {
                     e.printStackTrace()
                 } finally {
                     try {
-                        it.close()
+                        outputStream.close()
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
@@ -263,22 +272,23 @@ class PaintActivity : AppCompatActivity() {
     }
 
     private fun convertToBitmap(drawable: Drawable, widthPixels: Int, heightPixels: Int): Bitmap {
-        val mutableBitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(mutableBitmap)
-        drawable.setBounds(0, 0, widthPixels, heightPixels)
-        drawable.draw(canvas)
-        return mutableBitmap
+        return Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888).also{
+            drawable.setBounds(0, 0, widthPixels, heightPixels)
+            drawable.draw(Canvas(it))
+        }
     }
 
     fun newPainting(isPortraitCheck: Boolean) {
         //Intent object is used to create and start a new Activity
-        val paintIntent = Intent(this, PaintActivity::class.java)
-        paintIntent.putExtra("isPortrait", isPortraitCheck)
+        Intent(this, PaintActivity::class.java).also{
+            it.putExtra("isPortrait", isPortraitCheck)
 
-        // checks to see if new painting
-        // is a load or a new
-        paintIntent.putExtra("isLoad", isLoad)
-        startActivity(paintIntent)
+            // checks to see if new painting
+            // is a load or a new
+            it.putExtra("isLoad", isLoad)
+            startActivity(it)
+        }
+
         finish()
     }
 
@@ -287,11 +297,6 @@ class PaintActivity : AppCompatActivity() {
         (findViewById<View>(R.id.drawing) as PaintView).setColor(color)
     }
 
-    var brushSize: Float
-        get() = (findViewById<View>(R.id.drawing) as PaintView).brushSize
-        set(bSize) {
-            (findViewById<View>(R.id.drawing) as PaintView).brushSize = bSize
-        }
 
     fun setWillSave(setter: Boolean) {
         willSave = setter
@@ -299,16 +304,5 @@ class PaintActivity : AppCompatActivity() {
 
     fun hasDrawn(): Boolean {
         return findViewById<PaintView>(R.id.drawing).hasDrawn
-    }
-
-    companion object {
-        private const val MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 9001
-        fun overlay(bmp1: Bitmap, bmp2: Bitmap?): Bitmap {
-            val bmOverlay = Bitmap.createBitmap(bmp1.width, bmp1.height, bmp1.config)
-            val canvas = Canvas(bmOverlay)
-            canvas.drawBitmap(bmp1, Matrix(), null)
-            canvas.drawBitmap(bmp2!!, 0f, 0f, null)
-            return bmOverlay
-        }
     }
 }
