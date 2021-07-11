@@ -18,6 +18,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
 import java.text.DateFormat
@@ -29,22 +30,24 @@ class PaintActivity : AppCompatActivity() {
         private const val MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 9001
     }
 
+    private val viewModel: PaintViewModel by viewModels()
+
     private var isLoad = false
     var wasLoad = false
         private set
     private var willSave = false
     private var isPortrait = false
-    var brushColor = 0
-        private set
-
-    var brushSize: Float
-        get() = (findViewById<View>(R.id.drawing) as PaintView).brushSize
-        set(bSize) {
-            (findViewById<View>(R.id.drawing) as PaintView).brushSize = bSize
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel.brushColorInt.observe(this) {
+            findViewById<PaintView>(R.id.drawing).setColor(it)
+        }
+
+        viewModel.brushSizeFloat.observe(this) {
+            findViewById<PaintView>(R.id.drawing).brushSize = it
+        }
 
         //Screen Orientation will be decided upon creation of a new activity
         //The default orientation on opening the app the first time will be portrait
@@ -108,7 +111,6 @@ class PaintActivity : AppCompatActivity() {
                 Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             ))
         }
-        brushColor = Color.BLACK
 
         // this code will set the apps content view as the
         // activity_paint layout xml
@@ -224,7 +226,7 @@ class PaintActivity : AppCompatActivity() {
     }
 
     fun savePainting() {
-        val fileName = "ap_" + DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+        val fileName = "ap_" + DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG)
             .format(Date()).replace(" ", "_").replace("/", "_")
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
@@ -290,11 +292,6 @@ class PaintActivity : AppCompatActivity() {
         }
 
         finish()
-    }
-
-    fun setColor(color: Int) {
-        brushColor = color
-        (findViewById<View>(R.id.drawing) as PaintView).setColor(color)
     }
 
 

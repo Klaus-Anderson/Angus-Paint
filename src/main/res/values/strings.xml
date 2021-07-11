@@ -8,6 +8,7 @@
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
     <string name="which_orientation">Which orientation would you like for your painting?</string>
+    <string name="error">There was an error</string>
     <string name="load">Load</string>
     <string name="save">Save</string>
     <string name="new_string">New</string>
