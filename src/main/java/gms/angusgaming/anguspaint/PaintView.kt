@@ -23,7 +23,6 @@ class PaintView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     private var isCreated = false
     var hasDrawn = false
 
-
     // The Canvas class holds the "draw" calls.
     // To draw something, you need 4 basic components:
     // A Bitmap to hold the pixels,

@@ -86,10 +86,13 @@ class PaintActivity : AppCompatActivity() {
                                         )
                                     }
                             }
-                        } ?: Toast.makeText(
-                            this, "Failed to load image",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        } ?: run {
+                            Toast.makeText(
+                                this, "Failed to load image",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            newPainting(isPortrait)
+                        }
                     } else {
                         Toast.makeText(
                             this, "You haven't picked Image",
