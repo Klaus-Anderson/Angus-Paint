@@ -16,6 +16,7 @@ import androidx.fragment.app.DialogFragment
  * Created by Harry on 3/11/2016.
  */
 class OrientationFragment : DialogFragment() {
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
@@ -39,7 +40,6 @@ class OrientationFragment : DialogFragment() {
                     setImageResource(R.drawable.ic_stay_current_portrait_black_24dp)
                     setOnClickListener { v: View? ->
                         if (activity != null) {
-                            (activity as PaintActivity?)!!.setWillSave(false)
                             (this@OrientationFragment.activity as PaintActivity?)!!.newPainting(true)
                         }
                     }
@@ -48,7 +48,6 @@ class OrientationFragment : DialogFragment() {
                     setImageResource(R.drawable.ic_stay_current_landscape_black_24dp)
                     setOnClickListener { v: View? ->
                         if (activity != null) {
-                            (activity as PaintActivity?)!!.setWillSave(false)
                             (activity as PaintActivity?)!!.newPainting(false)
                         }
                     }

@@ -24,75 +24,48 @@ class ContinueFragment : DialogFragment() {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            addView(TextView(activity).apply {
-                setText(R.string.wish_to_save)
-                gravity = Gravity.CENTER
-                textSize = 18f
-                setTextColor(Color.BLACK)
-            })
-            addView(LinearLayout(activity).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER
 
-                addView(Button(activity).apply {
-                    setText(R.string.yes)
+            (activity as? PaintActivity)?.let { paintActivity ->
+                addView(TextView(paintActivity).apply {
+                    setText(R.string.wish_to_start_a_new_painting)
+                    gravity = Gravity.CENTER
                     textSize = 18f
+                    setTextColor(Color.BLACK)
+                })
 
-                    //pressing Yes will prompt the user to save the picture
-                    setOnClickListener { v: View? ->
-                        // attempt to save the paint
-                        if (this@ContinueFragment.activity != null) {
-                            (this@ContinueFragment.activity as PaintActivity?)!!.savePainting()
+                addView(LinearLayout(paintActivity).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER
 
-                            // only prompt the user to make a new painting
-                            // if the save is successful
-                            if (!(this@ContinueFragment.activity as PaintActivity?)!!.hasDrawn()) {
-                                (this@ContinueFragment.activity as PaintActivity)
-                                    .supportFragmentManager.beginTransaction()
-                                    .hide(this@ContinueFragment).commit()
-                                val orientFrag = OrientationFragment()
-                                orientFrag.show(
-                                    (this@ContinueFragment.activity as PaintActivity).supportFragmentManager,
-                                    "Dialog"
-                                )
-                            }
-                            (this@ContinueFragment.activity as PaintActivity)
-                                .supportFragmentManager.beginTransaction()
-                                .remove(this@ContinueFragment).commit()
+                    addView(Button(activity).apply {
+                        setText(R.string.yes)
+                        textSize = 18f
+
+                        //pressing Yes will prompt the user to save the picture
+                        setOnClickListener {
+                            OrientationFragment().show(
+                                paintActivity.supportFragmentManager,
+                                "Dialog"
+                            )
+                            paintActivity.supportFragmentManager
+                                .beginTransaction()
+                                .remove(this@ContinueFragment)
+                                .commit()
                         }
-                    }
-                })
+                    })
 
-                addView(Button(activity).apply {
-                    //pressing No will create a new paint activity without saving
-                    setText(R.string.no)
-                    textSize = 18f
-                    setOnClickListener {
-                        if (activity != null) {
-                            // hide the ContinueFragment,
-                            // create a an OrientationFragment,
-                            // then remove the ContinueFragment
-                            activity!!
-                                .supportFragmentManager.beginTransaction()
-                                .hide(this@ContinueFragment).commit()
-                            val orientFrag = OrientationFragment()
-                            orientFrag.show(this@ContinueFragment.activity!!.supportFragmentManager, "Dialog")
-                            this@ContinueFragment.activity!!
-                                .supportFragmentManager.beginTransaction()
-                                .remove(this@ContinueFragment).commit()
+                    addView(Button(paintActivity).apply {
+                        setText(R.string.cancel)
+                        textSize = 18f
+                        setOnClickListener {
+                            paintActivity.supportFragmentManager
+                                .beginTransaction()
+                                .remove(this@ContinueFragment)
+                                .commit()
                         }
-                    }
+                    })
                 })
-
-                addView(Button(activity).apply {
-                    setText(R.string.cancel)
-                    textSize = 18f
-                    setOnClickListener { v: View? ->
-                        activity?.supportFragmentManager?.beginTransaction()?.remove(this@ContinueFragment)
-                            ?.commit()
-                    }
-                })
-            })
+            }
         }
     }
 }

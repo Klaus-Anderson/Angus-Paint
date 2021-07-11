@@ -6,17 +6,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class PaintViewModel : ViewModel() {
-    private val mutableBrushColorInt = MutableLiveData(Color.BLACK)
-    private val mutableBrushSizeFloat = MutableLiveData(20f)
-    val brushColorInt: LiveData<Int> get() = mutableBrushColorInt
-    val brushSizeFloat: LiveData<Float> get() = mutableBrushSizeFloat
+    private val mutableBrushColorIntLiveData = MutableLiveData(Color.BLACK)
+    private val mutableBrushSizeFloatLiveData = MutableLiveData(20f)
+    val brushColorInt: LiveData<Int> get() = mutableBrushColorIntLiveData
+    val brushSizeFloat: LiveData<Float> get() = mutableBrushSizeFloatLiveData
 
     fun setBrushColor(color: Int) {
-        mutableBrushColorInt.value = color
+        mutableBrushColorIntLiveData.value = color
     }
 
     fun setBrushSize(size: Float) {
-        mutableBrushSizeFloat.value = size
+        mutableBrushSizeFloatLiveData.value = size
     }
 
     fun getBrushSizeFloat(): Float? {

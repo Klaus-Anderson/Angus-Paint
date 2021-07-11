@@ -5,7 +5,10 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -33,9 +36,6 @@ class PaintActivity : AppCompatActivity() {
     private val viewModel: PaintViewModel by viewModels()
 
     private var isLoad = false
-    var wasLoad = false
-        private set
-    private var willSave = false
     private var isPortrait = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,11 +59,8 @@ class PaintActivity : AppCompatActivity() {
             if (isPortrait) ActivityInfo.SCREEN_ORIENTATION_PORTRAIT else ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
         //check to see if this painting is supposed to load a picture
-        wasLoad = intent.getBooleanExtra("isLoad", false)
-        willSave = true
-
         // if this is a load, open up an image application
-        if (wasLoad) {
+        if (intent.getBooleanExtra("isLoad", false)) {
             // Start the Intent
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
                 try {
@@ -71,21 +68,23 @@ class PaintActivity : AppCompatActivity() {
                     if (activityResult.resultCode == RESULT_OK) {
                         activityResult.data?.data?.also {
                             // Set the Image in ImageView after decoding the String
-                            findViewById<View>(R.id.drawing).apply{
+                            findViewById<View>(R.id.drawing).apply {
                                 background =
                                     Bitmap.createScaledBitmap(
                                         BitmapFactory.decodeStream(contentResolver.openInputStream(it)),
-                                        width, height, true).let{
-                                        BitmapDrawable(resources,
+                                        width, height, true
+                                    ).let {
+                                        BitmapDrawable(
+                                            resources,
                                             Bitmap.createBitmap(
                                                 it, 0, 0, it.width, it.height,
                                                 Matrix().apply {
                                                     postRotate(90f)
                                                 },
                                                 true
-                                            ))
+                                            )
+                                        )
                                     }
-                                willSave = true
                             }
                         } ?: Toast.makeText(
                             this, "Failed to load image",
@@ -108,8 +107,10 @@ class PaintActivity : AppCompatActivity() {
                 }
             }.launch(
                 // Create intent to Open Image applications like Gallery, Google Photos
-                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            ))
+                Intent(
+                    Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                )
+            )
         }
 
         // this code will set the apps content view as the
@@ -157,6 +158,7 @@ class PaintActivity : AppCompatActivity() {
             R.id.brush_editor -> {
                 PaletteFragment().show(supportFragmentManager, "Cont")
             }
+
             R.id.item_load -> {
                 // this if/else statement will ask the user if they want to save
                 // if they have drawn something and they have not saved since
@@ -185,6 +187,7 @@ class PaintActivity : AppCompatActivity() {
                 isLoad = false
                 return true
             }
+
             R.id.item_about -> {
                 TextFragment().apply {
                     arguments = Bundle().apply {
@@ -193,6 +196,7 @@ class PaintActivity : AppCompatActivity() {
                 }.show(supportFragmentManager, "About")
                 return true
             }
+
             R.id.item_faqs -> {
                 TextFragment().apply {
                     arguments = Bundle().apply {
@@ -204,11 +208,11 @@ class PaintActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    public override fun onStop() {
+    override fun onDestroy() {
         // if the user closes the app with saving
         // their painting will auto save if it is not blank
-        if (hasDrawn() && willSave) savePainting()
-        super.onStop()
+        if (hasDrawn()) savePainting()
+        super.onDestroy()
     }
 
     override fun onRequestPermissionsResult(
@@ -225,20 +229,20 @@ class PaintActivity : AppCompatActivity() {
         }
     }
 
-    fun savePainting() {
+    private fun savePainting() {
         val fileName = "ap_" + DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG)
             .format(Date()).replace(" ", "_").replace("/", "_")
-        val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/angus-paint")
-            }
-        }
 
         val paintView = findViewById<PaintView>(R.id.drawing)
 
-        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)?.let { uri ->
+        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/angus-paint")
+                }
+            })?.let { uri ->
             contentResolver.openOutputStream(uri)?.use { outputStream ->
                 try {
                     // Use the compress method on the BitMap object to write image to the OutputStream
@@ -248,14 +252,13 @@ class PaintActivity : AppCompatActivity() {
                         paintView.height
                     )
 
-                    Bitmap.createBitmap(paintViewBitmap.width, paintViewBitmap.height, paintViewBitmap.config).also{
+                    Bitmap.createBitmap(paintViewBitmap.width, paintViewBitmap.height, paintViewBitmap.config).also {
                         Canvas(it).apply {
                             drawBitmap(paintViewBitmap, Matrix(), null)
                             drawBitmap(paintView.canvasBitmap, 0f, 0f, null)
                         }
-                    }.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
+                    }.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
 
-                    willSave = false
                     Toast.makeText(this, "Painting saved as Pictures/angus-paint/$fileName.png", Toast.LENGTH_LONG)
                         .show()
                 } catch (e: Exception) {
@@ -274,7 +277,7 @@ class PaintActivity : AppCompatActivity() {
     }
 
     private fun convertToBitmap(drawable: Drawable, widthPixels: Int, heightPixels: Int): Bitmap {
-        return Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888).also{
+        return Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888).also {
             drawable.setBounds(0, 0, widthPixels, heightPixels)
             drawable.draw(Canvas(it))
         }
@@ -282,7 +285,7 @@ class PaintActivity : AppCompatActivity() {
 
     fun newPainting(isPortraitCheck: Boolean) {
         //Intent object is used to create and start a new Activity
-        Intent(this, PaintActivity::class.java).also{
+        Intent(this, PaintActivity::class.java).also {
             it.putExtra("isPortrait", isPortraitCheck)
 
             // checks to see if new painting
@@ -294,12 +297,7 @@ class PaintActivity : AppCompatActivity() {
         finish()
     }
 
-
-    fun setWillSave(setter: Boolean) {
-        willSave = setter
-    }
-
-    fun hasDrawn(): Boolean {
+    private fun hasDrawn(): Boolean {
         return findViewById<PaintView>(R.id.drawing).hasDrawn
     }
 }

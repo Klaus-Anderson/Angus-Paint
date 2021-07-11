@@ -3,7 +3,8 @@
     <string name="action_settings">Settings</string>
     <string name="about">About</string>
     <string name="faqs">FAQs/Directions</string>
-    <string name="wish_to_save">Do you wish to save before continuing?</string>
+    <string name="wish_to_start_a_new_painting">Do you wish to start a new painting?
+        This one will automatically be saved</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="cancel">Cancel</string>

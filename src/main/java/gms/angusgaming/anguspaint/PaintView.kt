@@ -89,7 +89,7 @@ class PaintView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
             drawCanvas = Canvas(canvasBitmap)
 
             // by default have the canvas be entirely white
-            if (!(context as PaintActivity).wasLoad) drawCanvas.drawColor(Color.WHITE)
+            drawCanvas.drawColor(Color.WHITE)
             isCreated = true
         }
     }
