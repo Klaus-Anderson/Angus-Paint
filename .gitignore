@@ -1,4 +1,4 @@
-
+`x
 # Created by https://www.toptal.com/developers/gitignore/api/kotlin,android,androidstudio,java
 # Edit at https://www.toptal.com/developers/gitignore?templates=kotlin,android,androidstudio,java
 
@@ -249,3 +249,4 @@ fabric.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/kotlin,android,androidstudio,java
 /.idea/discord.xml
+/keystore.properties

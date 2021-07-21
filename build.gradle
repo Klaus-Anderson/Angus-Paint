@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+def keystorePropertiesFile= rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 buildscript {
     ext.kotlin_version = '1.5.10'
     ext.activity_version = '1.2.3'
@@ -23,19 +27,35 @@ allprojects {
 }
 
 android {
-    compileSdkVersion 30
+    signingConfigs {
+        config {
+            keyAlias = keystoreProperties['keyAlias']
+            keyPassword = keystoreProperties['keyPassword']
+            storeFile = file(keystoreProperties['storeFile'])
+            storePassword = keystoreProperties['storePassword']
+        }
+    }
+    compileSdkVersion = 30
 
     defaultConfig {
-        applicationId "gms.angusgaming.anguspaint"
+        applicationId = "gms.angusgaming.anguspaint"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 3
-        versionName "0.3"
+        versionCode = 5
+        versionName = "0.5"
     }
+
     compileOptions {
         targetCompatibility = 1.8
         sourceCompatibility = 1.8
     }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.config
+        }
+    }
+
     buildToolsVersion = '29.0.2'
 }
 
